@@ -1,0 +1,108 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+}
+
+
+h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 14px; 
+}
+
+header, footer {
+  background-color: #eee;
+  padding: 20px;
+}
+
+main {
+  padding: 20px; 
+}
+
+table {
+  border-collapse: collapse;
+}
+
+td {
+  border-width: 1px;
+  border-color: #ccc;
+  border-style: solid;
+  padding: 4px;
+}
+
+.button {
+  display: inline-block;
+  background-color: #339900;
+  color: #fff;
+  border-width: 1px;
+  border-color: #000;
+  border-style: solid;
+  padding: 2px;
+  border-radius: 2px;
+  font-size: 12px;
+  text-rendering: optimizeLegibility;
+}
+
+.json {
+  
+  padding: 10px;
+}
+
+.json__toggle {
+  display: inline-block;
+  background-color: #339900;
+  color: #fff;
+  border-width: 1px;
+  border-color: #000;
+  border-style: solid;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.json__detail {
+  
+}
+
+pre {
+  padding: 0;
+  margin: 0;
+}
+
+.deployment__scaleinput {
+  width: 30px;
+  margin-right: 4px;
+}
+
+.pod--summary .container--ready {
+  color: #339900;
+}
+
+.pod--summary .container--notready {
+  color: #cc0000;
+}
+
+.pod--summary .container--terminated {
+  text-decoration-line: line-through;
+}
+
+.container span {
+  padding: 0 4px;
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  scroll: auto;
+}
+
+.overlay .button {
+  position: fixed;
+  top: 4px;
+  right: 4px;
+}
