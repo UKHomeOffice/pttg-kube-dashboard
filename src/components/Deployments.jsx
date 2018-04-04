@@ -1,5 +1,6 @@
-import React from 'react';
+import React from 'react'
 import _ from 'underscore'
+import cookie from 'react-cookies'
 
 export default class Deployments extends React.Component {
   constructor (props) {
@@ -8,7 +9,8 @@ export default class Deployments extends React.Component {
       isLoaded: false,
       quota: null,
       context: '',
-      namespace: ''
+      namespace: '',
+      show: cookie.load('showDeployments') === 'true'
     }
   }
 
@@ -82,7 +84,6 @@ export default class Deployments extends React.Component {
   }
 
   handleScale(dep) {
-    console.log('scale', dep)
 
     fetch(`/api/context/${this.state.context}/namespace/${this.state.namespace}/deployments/${dep.metadata.name}`, {
       body: JSON.stringify({scale: this.state.scales[dep.metadata.name]}),
@@ -102,8 +103,9 @@ export default class Deployments extends React.Component {
 
   render() {
     let deploymentsSummary = ''
+    cookie.save('showDeployments', this.state.show)
 
-    if (this.state.deployments && this.state.deployments) {
+    if (this.state.deployments && this.state.show) {
       deploymentsSummary = (
         <table>
           <thead>
@@ -140,7 +142,7 @@ export default class Deployments extends React.Component {
     }
     return (
       <div>
-        <h2>Deployments</h2> 
+        <h2 onClick={() => this.setState({show: !this.state.show})} className={this.state.show ? 'icon icon-down-open': 'icon icon-right-open'}>Deployments</h2> 
         {deploymentsSummary}
       </div>
     )

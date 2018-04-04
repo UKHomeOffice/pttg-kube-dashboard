@@ -1,4 +1,5 @@
 import React from 'react';
+import cookie from 'react-cookies'
 
 export default class Quota extends React.Component {
   constructor (props) {
@@ -8,7 +9,8 @@ export default class Quota extends React.Component {
       isLoaded: false,
       quota: null,
       context: '',
-      namespace: ''
+      namespace: '',
+      show: false
     }
   }
 
@@ -68,10 +70,17 @@ export default class Quota extends React.Component {
   }
 
   render() {
+    let quotaSummary = ''
+    if (this.state.quota && this.state.show) {
+      quotaSummary = (
+        <a className="button" onClick={(e) => this.handleClick(this.state.quota)}>JSON</a>
+      )
+    }
     return (
       <div>
-        <h2>Quota</h2> 
-        <a className="button" onClick={(e) => this.handleClick(this.state.quota)}>JSON</a>
+        <h2 onClick={() => this.setState({show: !this.state.show})} className={this.state.show ? 'icon icon-down-open': 'icon icon-right-open'}>Quota</h2>
+        {quotaSummary}
+        
       </div>
     )
   }

@@ -1,6 +1,6 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
 import _ from 'underscore'
+import cookie from 'react-cookies'
 
 export default class Pods extends React.Component {
   constructor (props) {
@@ -9,7 +9,8 @@ export default class Pods extends React.Component {
       isLoaded: false,
       quota: null,
       context: '',
-      namespace: ''
+      namespace: '',
+      show: cookie.load('showPods') !== 'false'
     }
   }
 
@@ -86,10 +87,25 @@ export default class Pods extends React.Component {
       )
   }
 
+  handleClickPod (p) {
+    this.showOverlay({status: 'LOADING'})
+    fetch(`/api/context/${this.state.context}/namespace/${this.state.namespace}/pods/${p.name}/describe`)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.showOverlay(result)
+        },
+        (error) => {
+          this.showOverlay({error: error})
+        }
+      )
+  }
+
   render() {
     let podsSummary = ''
+    cookie.save('showPods', this.state.show)
 
-    if (this.state.pods) {
+    if (this.state.pods && this.state.show) {
       
       let podDetails = this.state.pods.map(p =>{
         let readyCount = 0
@@ -135,7 +151,7 @@ export default class Pods extends React.Component {
             {podDetails.map(p => (
               <tr key={p.name} className="pod--summary">
                 <td>
-                  <NavLink to={`/context/${this.state.context}/namespace/${this.state.namespace}/pod/${p.name}`} activeClassName='active'> {p.name}</NavLink>
+                  <a onClick={(e) => this.handleClickPod(p)}>{p.name}</a>
                 </td>
                 <td>{p.readyContainers}/{p.totalContainers}</td>
                 <td>{p.containers.map(c =>(
@@ -156,7 +172,7 @@ export default class Pods extends React.Component {
     }
     return (
       <div>
-        <h2>Pods</h2> 
+        <h2 onClick={() => this.setState({show: !this.state.show})} className={this.state.show ? 'icon icon-down-open': 'icon icon-right-open'}>Pods</h2> 
         {podsSummary}
       </div>
     )

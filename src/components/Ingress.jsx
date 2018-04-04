@@ -1,4 +1,5 @@
 import React from 'react';
+import cookie from 'react-cookies'
 
 export default class Ingress extends React.Component {
   constructor (props) {
@@ -8,7 +9,8 @@ export default class Ingress extends React.Component {
       isLoaded: false,
       quota: null,
       context: '',
-      namespace: ''
+      namespace: '',
+      show: cookie.load('showIngress') === 'true'
     }
   }
 
@@ -69,29 +71,31 @@ export default class Ingress extends React.Component {
 
   render() {
     let ingressSummary = ''
-
+    cookie.save('showIngress', this.state.show)
     if (this.state.ingress && this.state.ingress.items) {
-      ingressSummary = (
-        <table>
-          <tbody>
-            {this.state.ingress.items.map(ing => (
-              <tr key={ing.metadata.name}>
-                <td>{ing.metadata.name}</td>
-                <td><a href={'https://' + ing.spec.rules[0].host} target="_blank">{ing.spec.rules[0].host}</a></td>
-                <td>{ing.spec.rules[0].http.paths[0].backend.serviceName}</td>
-                <td>{ing.spec.rules[0].http.paths[0].backend.servicePort}</td>
-                <td>
-                  <a className="button" onClick={(e) => this.handleClick(ing)}>JSON</a>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )
+      if (this.state.show) {
+        ingressSummary = (
+          <table>
+            <tbody>
+              {this.state.ingress.items.map(ing => (
+                <tr key={ing.metadata.name}>
+                  <td>{ing.metadata.name}</td>
+                  <td><a href={'https://' + ing.spec.rules[0].host} target="_blank">{ing.spec.rules[0].host}</a></td>
+                  <td>{ing.spec.rules[0].http.paths[0].backend.serviceName}</td>
+                  <td>{ing.spec.rules[0].http.paths[0].backend.servicePort}</td>
+                  <td>
+                    <a className="button" onClick={(e) => this.handleClick(ing)}>JSON</a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+      }
     }
     return (
       <div>
-        <h2>Ingress</h2> 
+        <h2 onClick={() => this.setState({show: !this.state.show})} className={this.state.show ? 'icon icon-down-open': 'icon icon-right-open'}>Ingress</h2> 
         {ingressSummary}
       </div>
     )

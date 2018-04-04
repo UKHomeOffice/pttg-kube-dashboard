@@ -1,4 +1,5 @@
 import React from 'react';
+import cookie from 'react-cookies'
 
 export default class Secrets extends React.Component {
   constructor (props) {
@@ -7,7 +8,8 @@ export default class Secrets extends React.Component {
       isLoaded: false,
       quota: null,
       context: '',
-      namespace: ''
+      namespace: '',
+      show: cookie.load('showSecrets') === 'true'
     }
   }
 
@@ -68,8 +70,8 @@ export default class Secrets extends React.Component {
 
   render() {
     let secretsSummary = ''
-
-    if (this.state.secrets && this.state.secrets) {
+    cookie.save('showSecrets', this.state.show)
+    if (this.state.secrets && this.state.secrets && this.state.show) {
       secretsSummary = (
         <table>
           <thead>
@@ -83,7 +85,9 @@ export default class Secrets extends React.Component {
             {this.state.secrets.map(sec => (
               <tr key={sec.metadata.name}>
                 <td>{sec.metadata.name}</td>
-                <td>{Object.keys(sec.data).map((key) => (<span key={key}>{key}<br /></span>))}</td>
+                <td>{Object.keys(sec.data).map((key) => (
+                  <span key={key}>{key}<br /></span>
+                ))}</td>
                 <td>
                   <a className="button" onClick={(e) => this.handleClick(sec)}>JSON</a>
                 </td>
@@ -95,7 +99,7 @@ export default class Secrets extends React.Component {
     }
     return (
       <div>
-        <h2>Secrets</h2> 
+        <h2 onClick={() => this.setState({show: !this.state.show})} className={this.state.show ? 'icon icon-down-open': 'icon icon-right-open'}>Secrets</h2> 
         {secretsSummary}
       </div>
     )

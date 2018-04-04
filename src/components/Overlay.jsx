@@ -44,7 +44,7 @@ export default class Overlay extends React.Component {
     return (<div className="overlay">
       <a className="button button--close" onClick={() => this.setState({show: false})}>X</a>
       <div className="json">
-        <div className="json__detail">
+        <div className="json__detail" onClick={() => this.setState({show: false})}>
           <PrismCode className="language-json" component="pre">{datastr}</PrismCode>
         </div>
       </div>

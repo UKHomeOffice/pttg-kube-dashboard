@@ -1,4 +1,5 @@
 import React from 'react';
+import cookie from 'react-cookies'
 
 export default class Configmaps extends React.Component {
   constructor (props) {
@@ -7,7 +8,8 @@ export default class Configmaps extends React.Component {
       isLoaded: false,
       quota: null,
       context: '',
-      namespace: ''
+      namespace: '',
+      show: cookie.load('showConfigmaps') === 'true'
     }
   }
 
@@ -68,8 +70,8 @@ export default class Configmaps extends React.Component {
 
   render() {
     let configmapsSummary = ''
-
-    if (this.state.configmaps && this.state.configmaps) {
+    cookie.save('showConfigmaps', this.state.show)
+    if (this.state.configmaps && this.state.configmaps && this.state.show) {
       configmapsSummary = (
         <table>
           <thead>
@@ -95,7 +97,7 @@ export default class Configmaps extends React.Component {
     }
     return (
       <div>
-        <h2>ConfigMaps</h2> 
+        <h2 onClick={() => this.setState({show: !this.state.show})} className={this.state.show ? 'icon icon-down-open': 'icon icon-right-open'}>ConfigMaps</h2> 
         {configmapsSummary}
       </div>
     )

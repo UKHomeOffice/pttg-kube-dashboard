@@ -117,7 +117,7 @@ app.get('/api/context/:con/namespace/:ns/pods', (req, res) => {
 })
 
 app.get('/api/context/:con/namespace/:ns/pods/:id/describe', (req, res) => {
-  const cmd = `kubectl --context=${req.params.con} describe pod ${req.params.id} -o=json --namespace=${req.params.ns}`
+  const cmd = `kubectl --context=${req.params.con} describe pod ${req.params.id} -n=${req.params.ns}`
   stdCmdAndResponse(res, cmd, (result) => {
     return result.items
   })
