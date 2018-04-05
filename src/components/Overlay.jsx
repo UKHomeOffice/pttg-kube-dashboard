@@ -1,5 +1,7 @@
 import React from 'react';
 import PrismCode from 'react-prism'
+import _ from 'underscore'
+import Clipboard from 'react-clipboard.js'
 
 export default class Overlay extends React.Component {
   constructor (props) {
@@ -17,6 +19,7 @@ export default class Overlay extends React.Component {
     this.setState({
       show: true,
       json: event.detail.json,
+      render: event.detail.render,
       scroll: window.scrollY
     })
     window.scroll(0, 0)
@@ -40,13 +43,50 @@ export default class Overlay extends React.Component {
       return '' 
     }
 
-    let datastr = JSON.stringify(this.state.json, null, '  ')
+    let content = ''
+
+
+    if (!this.state.render) {
+      let datastr = JSON.stringify(this.state.json, null, '  ')
+      content = (
+        <div className="json">
+          <div className="json__detail" onClick={() => this.setState({show: false})}>
+            <PrismCode className="language-json" component="pre">{datastr}</PrismCode>
+          </div>
+        </div>
+      )
+    }
+
+    if (this.state.render && this.state.json.kind === 'Secret') {
+      let summary = []
+      _.each(this.state.json.data, (val, key) => {
+        summary.push({key, val, b64: window.atob(val)})
+      })
+      content = (
+        <div>
+          <h2>{this.state.json.metadata.name}</h2>
+          <table>
+            <tr>
+              <th>Key</th>
+              <th>Base64</th>
+              <th>Value</th>
+            </tr>
+          {summary.map((obj) => (
+            <tr className="secret">
+              <th className="secret__key">{obj.key}</th>
+              <td className="secret__value" onClick={(e) => e.stopPropagation()}><Clipboard data-clipboard-text={obj.val}>{obj.val}</Clipboard></td>
+              <td className="secret__value" onClick={(e) => e.stopPropagation()}><Clipboard data-clipboard-text={obj.b64}>{obj.b64}</Clipboard></td>
+            </tr>
+          ))}
+          </table>
+        </div>
+      )
+    }
+
     return (<div className="overlay">
       <a className="button button--close" onClick={() => this.setState({show: false})}>X</a>
-      <div className="json">
-        <div className="json__detail" onClick={() => this.setState({show: false})}>
-          <PrismCode className="language-json" component="pre">{datastr}</PrismCode>
-        </div>
+      <div className="overlay__content" onClick={() => this.setState({show: false})}>
+        {content}
       </div>
     </div>)
   }

@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'rkube';
-  src: url('./font/rkube.eot?61440511');
-  src: url('./font/rkube.eot?61440511#iefix') format('embedded-opentype'),
-       url('./font/rkube.woff2?61440511') format('woff2'),
-       url('./font/rkube.woff?61440511') format('woff'),
-       url('./font/rkube.ttf?61440511') format('truetype'),
-       url('./font/rkube.svg?61440511#rkube') format('svg');
+  src: url('./font/rkube.eot?66734633');
+  src: url('./font/rkube.eot?66734633#iefix') format('embedded-opentype'),
+       url('./font/rkube.woff2?66734633') format('woff2'),
+       url('./font/rkube.woff?66734633') format('woff'),
+       url('./font/rkube.ttf?66734633') format('truetype'),
+       url('./font/rkube.svg?66734633#rkube') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'rkube';
-    src: url('./font/rkube.svg?61440511#rkube') format('svg');
+    src: url('./font/rkube.svg?66734633#rkube') format('svg');
   }
 }
 */
@@ -69,6 +69,7 @@
 .icon-right-open:before { content: '\e80b'; } /* '' */
 .icon-up-open:before { content: '\e80c'; } /* '' */
 .icon-eye:before { content: '\e80d'; } /* '' */
+.icon-login:before { content: '\e80e'; } /* '' */
 .icon-spin2:before { content: '\e831'; } /* '' */
 .icon-link-ext:before { content: '\f08e'; } /* '' */
 .icon-docs:before { content: '\f0c5'; } /* '' */

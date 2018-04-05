@@ -29,7 +29,7 @@ table {
   border-collapse: collapse;
 }
 
-td {
+td, th{
   border-width: 1px;
   border-color: #ccc;
   border-style: solid;
@@ -55,7 +55,7 @@ td {
 
 .json {
   
-  padding: 10px;
+  
 }
 
 .json__toggle {
@@ -113,4 +113,37 @@ pre {
   position: fixed;
   top: 4px;
   right: 4px;
+}
+
+.overlay__content {
+  padding: 10px;
+  background-color: #f5f2f0;
+}
+
+
+.secret {
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+  padding: 8px;
+}
+
+.secret span {
+  display: block;
+}
+
+.secret__key {
+
+}
+
+.secret__value span {
+  padding: 4px 20px 4px 4px;
+  margin: 2px;
+  position: relative;
+}
+
+.secret__value span:before{
+  position: absolute;
+  top: 6px;
+  right: 0;
 }

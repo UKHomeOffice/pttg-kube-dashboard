@@ -58,10 +58,11 @@ export default class Secrets extends React.Component {
     this.refreshSecrets(nextProps.match.params.context, nextProps.match.params.namespace) 
   }
 
-  handleClick (sec) {
+  handleClick (sec, render) {
     var clickEvent = new CustomEvent('overlay_show', {
       detail: {
-        json: sec
+        json: sec,
+        render
       }
     });
 
@@ -89,7 +90,8 @@ export default class Secrets extends React.Component {
                   <span key={key}>{key}<br /></span>
                 ))}</td>
                 <td>
-                  <a className="button" onClick={(e) => this.handleClick(sec)}>JSON</a>
+                  <a className="button" onClick={(e) => this.handleClick(sec, true)}>VIEW</a>&nbsp;
+                  <a className="button" onClick={(e) => this.handleClick(sec, false)}>JSON</a>
                 </td>
               </tr>
             ))}
