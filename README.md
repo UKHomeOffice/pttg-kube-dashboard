@@ -28,5 +28,3 @@ exports = module.exports = {
 ```
 
 `npm start`
-
-`node server.js`
