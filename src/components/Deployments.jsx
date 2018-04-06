@@ -34,15 +34,17 @@ export default class Deployments extends React.Component {
       .then(res => res.json())
       .then(
         (result) => {
-          let scales = {}
-          _.each(result, (dep) => {
-            scales[dep.metadata.name] = dep.status.replicas
-          })
-          this.setState({
-            isLoaded: true,
-            deployments: result,
-            scales: scales
-          })
+          if (!result.error) {
+            let scales = {}
+            _.each(result, (dep) => {
+              scales[dep.metadata.name] = dep.status.replicas
+            })
+            this.setState({
+              isLoaded: true,
+              deployments: result,
+              scales: scales
+            })
+          }
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
@@ -116,6 +118,8 @@ export default class Deployments extends React.Component {
               <th>Unavailable</th>
               <th>Observed</th>
               <th>Updated</th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

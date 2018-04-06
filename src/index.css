@@ -95,6 +95,12 @@ pre {
   text-decoration-line: line-through;
 }
 
+.pod__events--hidden {
+  display: none;
+}
+
+
+
 .container span {
   padding: 0 4px;
   display: block;

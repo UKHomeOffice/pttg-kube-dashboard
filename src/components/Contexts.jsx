@@ -1,14 +1,11 @@
 import React from 'react'
-// import { Link } from 'react-router-dom'
 import { NavLink } from 'react-router-dom'
 import './Contexts.css'
 import Namespaces from './Namespaces'
 
 import { Route } from 'react-router-dom'
-// import ContextService from './Contexts.service.js'
 
 const _ = require('underscore')
-const contextLib = require('./Contexts.service')
 
 export default class Contexts extends React.Component {
   constructor (props) {
@@ -31,7 +28,6 @@ export default class Contexts extends React.Component {
             contexts: result.contexts,
             selectedContext: _.findWhere(result.contexts, {name: this.props.match.params.context})
           })
-          contextLib.setContexts(result.contexts)
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow

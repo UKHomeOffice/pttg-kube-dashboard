@@ -1,6 +1,4 @@
 import React from 'react'
-// import { Link } from 'react-router-dom'
-const contextLib = require('./Contexts.service')
 
 export default class Context extends React.Component {
   constructor (props) {

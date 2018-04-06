@@ -33,10 +33,12 @@ export default class Secrets extends React.Component {
       .then(res => res.json())
       .then(
         (result) => {
-          this.setState({
-            isLoaded: true,
-            secrets: result
-          })
+          if (!result.error) {
+            this.setState({
+              isLoaded: true,
+              secrets: result
+            })
+          }
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow

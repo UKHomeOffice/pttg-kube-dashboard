@@ -4,7 +4,7 @@ import cookie from 'react-cookies'
 export default class Quota extends React.Component {
   constructor (props) {
     super(props)
-    console.log(props)
+    
     this.state = {
       isLoaded: false,
       quota: null,

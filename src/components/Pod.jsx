@@ -38,6 +38,7 @@ export default class Pod extends React.Component {
             isLoaded: true,
             descr: result
           })
+          this.props.podEventsCallback('pods_loaded', this, result)
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow

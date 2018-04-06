@@ -1,6 +1,8 @@
 import React from 'react'
 import _ from 'underscore'
 import cookie from 'react-cookies'
+import podsService from './Pods.service'
+import EventsTable from './EventsTable'
 
 export default class Pods extends React.Component {
   constructor (props) {
@@ -34,10 +36,18 @@ export default class Pods extends React.Component {
       .then(res => res.json())
       .then(
         (result) => {
-          this.setState({
-            isLoaded: true,
-            pods: result
-          })
+          if (!result.error) {
+            _.each(result, (p) => {
+              p.events = []
+            })
+            this.setState({
+              isLoaded: true,
+              pods: result
+            })
+            
+            // this.props.podEventsCallback('pods_loaded', this, result)
+            podsService.setPods({obj: this, data:result})
+          }
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
@@ -51,11 +61,11 @@ export default class Pods extends React.Component {
       )
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.refreshPods(this.props.match.params.context, this.props.match.params.namespace)
   }
 
-  componentWillReceiveProps(nextProps, nextState) {
+  componentWillReceiveProps (nextProps, nextState) {
     this.refreshPods(nextProps.match.params.context, nextProps.match.params.namespace) 
   }
 
@@ -71,6 +81,10 @@ export default class Pods extends React.Component {
     });
 
     document.dispatchEvent(clickEvent);
+  }
+
+  mergeEventDetails (e) {
+    console.log('mergeEventDetails', e)
   }
 
   handleClickLog (p, c) {
@@ -99,6 +113,16 @@ export default class Pods extends React.Component {
           this.showOverlay({error: error})
         }
       )
+  }
+
+  handleClickPodEvents (p) {
+    
+    let pod = _.find(this.state.pods, (pod) => p.metadata.name === pod.metadata.name)
+    if (pod) {
+      console.log(pod)
+      pod.showEvents = !pod.showEvents
+    }
+    this.setState({ pods: this.state.pods })
   }
 
   render() {
@@ -133,25 +157,33 @@ export default class Pods extends React.Component {
             ready: c.ready,
             terminated: _.has(c.state, 'terminated'),
             classes: classes.join(' '),
-            msg: msg
+            msg: msg,
           }
         })
+
+        let viewEventsLink = (p.events.length) ? (<a onClick={() => this.handleClickPodEvents(p)} className={p.showEvents ? 'icon icon-down-open': 'icon icon-right-open'}>Events</a>) : '' 
+
         return {
           name: p.metadata.name,
           containers,
           totalContainers: containers.length,
           readyContainers: readyCount,
-          raw: p
+          raw: p,
+          events: p.events,
+          showEvents: p.showEvents,
+          viewEventsLink
         }
       })
 
       podsSummary = (
         <table>
-          <tbody>
+          
             {podDetails.map(p => (
-              <tr key={p.name} className="pod--summary">
+              <tbody key={p.name}>
+              <tr className="pod--summary">
                 <td>
-                  <a onClick={(e) => this.handleClickPod(p)}>{p.name}</a>
+                  <a onClick={() => this.handleClickPod(p)}>{p.name}</a>
+                  {p.viewEventsLink}
                 </td>
                 <td>{p.readyContainers}/{p.totalContainers}</td>
                 <td>{p.containers.map(c =>(
@@ -165,8 +197,14 @@ export default class Pods extends React.Component {
                   <a className="button" onClick={(e) => this.handleClick(p)}>JSON</a>
                 </td>
               </tr>
+              <tr>
+                <td colSpan="999" className={(p.showEvents && p.events) ? 'pod__events' : 'pod__events pod__events--hidden'}>
+                  <EventsTable events={p.events} template="pods" />
+                </td>
+              </tr>
+              </tbody>
             ))}
-          </tbody>
+          
         </table>
       )
     }
