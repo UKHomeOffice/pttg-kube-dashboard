@@ -158,6 +158,7 @@ export default class Pods extends React.Component {
             terminated: _.has(c.state, 'terminated'),
             classes: classes.join(' '),
             msg: msg,
+            image: c.image
           }
         })
 
@@ -189,7 +190,8 @@ export default class Pods extends React.Component {
                 <td>{p.containers.map(c =>(
                   <div key={c.name} className={c.classes}>
                     <a onClick={(e) => this.handleClickLog(p, c)}>{c.name}</a>
-                    <span>{c.msg}</span>
+                    <span class="container__image">{c.image}</span>
+                    <span class="container__msg">{c.msg}</span>
                   </div>
                 ))}
                 </td>

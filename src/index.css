@@ -83,11 +83,11 @@ pre {
   margin-right: 4px;
 }
 
-.pod--summary .container--ready {
+.pod--summary .container--ready a{
   color: #339900;
 }
 
-.pod--summary .container--notready {
+.pod--summary .container--notready a{
   color: #cc0000;
 }
 
@@ -100,10 +100,28 @@ pre {
 }
 
 
+.container {
+  border-width: 1px 0 0 0;
+  border-style: solid;
+  border-color: #ccc;
+  padding: 0 0 4px 0;
+}
+.container:first-child {
+  border: none;
+}
 
 .container span {
   padding: 0 4px;
   display: block;
+}
+
+.container__image {
+  font-size: 10px;
+}
+
+.container__msg {
+  font-size: 12px;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 }
 
 .overlay {
