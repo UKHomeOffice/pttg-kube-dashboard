@@ -117,9 +117,31 @@ app.get('/api/context/:con/namespace/:ns/events', (req, res) => {
 })
 
 app.get('/api/context/:con/namespace/:ns/pods', (req, res) => {
-  const cmd = `kubectl --context=${req.params.con} get pods -o=json --namespace=${req.params.ns}`
-  stdCmdAndResponse(res, cmd, (result) => {
-    return result.items
+  // get the events
+  const ecmd = `kubectl --context=${req.params.con} get events -o=json --namespace=${req.params.ns}`
+  execCmd(ecmd).then((events) => {
+    let podEvents = {}
+    _.each(events.items, (evt) => {
+      if (evt.involvedObject.kind !== 'Pod') {
+        // only interested in Pod events
+        return
+      }
+
+      if (!_.has(podEvents, evt.involvedObject.name)) {
+        // group the events by pod name
+        podEvents[evt.involvedObject.name] = []
+      }
+      podEvents[evt.involvedObject.name].push(evt)
+    })
+
+    const cmd = `kubectl --context=${req.params.con} get pods -o=json --namespace=${req.params.ns}`
+    stdCmdAndResponse(res, cmd, (result) => {
+      // find the events related to each pod and set events proprty
+      _.each(result.items, pod => {
+        pod.events = _.has(podEvents, pod.metadata.name) ? podEvents[pod.metadata.name] : []
+      })
+      return result.items
+    })
   })
 })
 

@@ -1,32 +1,21 @@
 import React from 'react';
-import cookie from 'react-cookies'
-import podsService from './Pods.service'
+import OverlayButton from './OverlayButton'
+import _ from 'underscore'
+
 
 export default class EventsTable extends React.Component {
-  constructor (props) {
-    super(props)
-    
-    this.state = {
-      events: props.events
-    }
-  }
-
-  handleClick (ing) {
-    var clickEvent = new CustomEvent('overlay_show', {
-      detail: {
-        json: ing
-      }
-    });
-
-    document.dispatchEvent(clickEvent)
-  }
 
   render() {
+    let data = this.props.data
+    if (!_.isArray(data)) {
+      return ''
+    }
+
     if (this.props.template === 'pods') {
       return (
         <table>
           <tbody>
-            {this.state.events.map(evt => (
+            {data.map(evt => (
               <tr key={evt.metadata.name}>
                 <td>{evt.firstTimestamp}</td>
                 <td>{evt.count}</td>
@@ -43,7 +32,7 @@ export default class EventsTable extends React.Component {
     return (
       <table>
         <tbody>
-          {this.state.events.map(evt => (
+          {data.map(evt => (
             <tr key={evt.metadata.name}>
               <td>{evt.firstTimestamp}</td>
               <td>{evt.count}</td>
@@ -53,7 +42,7 @@ export default class EventsTable extends React.Component {
               <td>{evt.message}</td>
               <td>{evt.involvedObject.name}</td>
               <td>
-                <a className="button" onClick={(e) => this.handleClick(evt)}>JSON</a>
+                <OverlayButton label="JSON" data={evt} />
               </td>
             </tr>
           ))}

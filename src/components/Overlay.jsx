@@ -83,6 +83,30 @@ export default class Overlay extends React.Component {
       )
     }
 
+    if (this.state.render && this.state.json.kind === 'ConfigMap') {
+      let summary = []
+      _.each(this.state.json.data, (val, key) => {
+        summary.push({key, val})
+      })
+      content = (
+        <div>
+          <h2>{this.state.json.metadata.name}</h2>
+          <table>
+            <tr>
+              <th>Key</th>
+              <th>Value</th>
+            </tr>
+          {summary.map((obj) => (
+            <tr className="secret">
+              <th className="secret__key">{obj.key}</th>
+              <td className="secret__value" onClick={(e) => e.stopPropagation()}><Clipboard data-clipboard-text={obj.val}>{obj.val}</Clipboard></td>
+            </tr>
+          ))}
+          </table>
+        </div>
+      )
+    }
+
     return (<div className="overlay">
       <a className="button button--close" onClick={() => this.setState({show: false})}>X</a>
       <div className="overlay__content" onClick={() => this.setState({show: false})}>
