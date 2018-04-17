@@ -3,6 +3,7 @@ import { NavLink, Route } from 'react-router-dom'
 import Namespace from './Namespace'
 import Loader from './Loader'
 import Helm from './Helm'
+import HelmService from './HelmService'
 
 export default class Namespaces extends React.Component {
   constructor (props) {
@@ -29,6 +30,7 @@ export default class Namespaces extends React.Component {
             cxt: cxt,
             helm: result
           })
+          HelmService.setData(cxt, result)
         }
       },
       (error) => {
@@ -37,6 +39,7 @@ export default class Namespaces extends React.Component {
           cxt: cxt,
           helm: {}
         })
+        HelmService.setData(cxt, null)
       }
     )
   }

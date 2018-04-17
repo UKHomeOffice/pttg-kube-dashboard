@@ -39,10 +39,15 @@ td, th{
   border-color: #ccc;
   border-style: solid;
   padding: 4px;
+  vertical-align: top;
+}
+
+a {
+  cursor: pointer;
 }
 
 a:hover {
-  color: #f00;
+  color: #f00 !important;
 }
 
 .title--collapsed {
@@ -92,6 +97,11 @@ pre {
   margin-right: 4px;
 }
 
+.pod--summary td{
+  border-width: 2px 1px 1px 1px;
+
+}
+
 .pod--summary .container--ready a{
   color: #339900;
 }
@@ -109,25 +119,6 @@ pre {
 }
 
 
-
-.container {
-  border-width: 1px 0 0 0;
-  border-style: solid;
-  border-color: #ccc;
-  padding: 4px 0 4px 0;
-  margin-top: 4px;
-}
-.container:first-child {
-  border: none;
-  margin-top: 0;
-  padding-top: 0;
-}
-
-/*.container span {
-  padding: 0 4px;
-  display: block;
-}
-*/
 .container__image {
   font-size: 10px;
 }
@@ -150,9 +141,31 @@ pre {
 
 .container__link--port {
   position: absolute;
-  top: 2px;
-  right: 2px;
+  top: 0px;
+  right: 0px;
   font-size: 10px;
+}
+
+.container__hash {
+  width: 50px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.container__helm {
+  width: 50px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.container__hash--match, 
+.container__helm--match {
+  color: #339900;
+}
+
+.container__hash--mismatch, 
+.container__helm--mismatch {
+  color: #cc0000;
 }
 
 .overlay {

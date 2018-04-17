@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'underscore'
 import EventsTable from './EventsTable'
 import OverlayButton from './OverlayButton'
+import HelmService from './HelmService'
 
 export default class PodsTable extends React.Component {
   constructor (props) {
@@ -17,7 +18,7 @@ export default class PodsTable extends React.Component {
         json: data,
         render
       }
-    });
+    })
 
     document.dispatchEvent(clickEvent);
   }
@@ -60,14 +61,69 @@ export default class PodsTable extends React.Component {
     this.showOverlay(data, true)
   }
 
+  getPodHtml (p) {
+    let containersWithHtml = p.containers.map(c => {
+      c.html = this.getContainerHtml(p, c)
+      return c
+    })
+    let containerWithHTMLfirst = containersWithHtml.shift()
+    let viewEventsLink = (p.events.length) ? (<a onClick={() => this.handleClickPodEvents(p)} className={p.showEvents ? 'icon icon-down-open': 'icon icon-right-open'}>Events</a>) : '' 
+
+    return (
+      <tbody key={p.name}>
+        <tr className="pod--summary">
+          <td rowSpan={p.totalContainers}>
+            {p.name}
+            {p.viewEventsLink}
+          </td>
+          <td rowSpan={p.totalContainers}>{p.readyContainers}/{p.totalContainers}</td>
+          {containerWithHTMLfirst.html}
+          <td rowSpan={p.totalContainers}>
+            <OverlayButton label="JSON" data={p.raw} />
+          </td>
+        </tr>
+        {containersWithHtml.map(c => (
+          <tr key={c.name}>{c.html}</tr>
+        ))}
+        <tr>
+          <td colSpan="999" className={(p.showEvents && p.events) ? 'pod__events' : 'pod__events pod__events--hidden'}>
+            <EventsTable data={p.events} template="pods" />
+          </td>
+        </tr>
+      </tbody>
+    )
+  }
+
+  getContainerHtml (p, c) {
+    return [
+      <td key={c.name}>
+        <div className={c.classes}>
+          <span className="container__links">
+            <a className="container__link" onClick={(e) => this.handleClickLog(p, c)} title="View logs for container">{c.name}</a>
+            <a className="container__link container__link--port" onClick={(e) => this.handleClickPort(p, c)} title="kubectl commands for port forwarding, sh and bash">{c.port}</a>
+          </span>
+          <span className="container__image">{c.image}</span>
+          <span className="container__msg">{c.msg}</span>
+        </div>
+      </td>,
+      <td key={c.name + 'hash'} className={c.hashClass}>{c.hash}</td>,
+      <td key={c.name + 'helm'} className={c.helmClass}>{c.helmHash}</td>
+    ]
+  }
+
   render() {
     let data = this.state.data || this.props.data
     if (!_.isArray(data)) {
       return ''
     }
       
+    let helm = HelmService.getData(this.props.context)
+
+    // EACH POD
     let podDetails = data.map(p =>{
       let readyCount = 0
+
+      // EACH CONTAINER
       let containers = p.status.containerStatuses.map(c => {
         readyCount+= (c.ready) ? 1 : 0
         let classes = ['container']
@@ -92,6 +148,20 @@ export default class PodsTable extends React.Component {
         }))
         
         let port = (containerSpec && containerSpec.ports && containerSpec.ports[0]) ? containerSpec.ports[0].containerPort : ''
+        let hash = c.image.replace(/[^:]*:(a-z0-9)*/i, '$1')
+        let helmHash = helm[c.name] || null
+        let helmClass
+        let hashClass
+        if (helmHash && helmHash === hash) {
+          hashClass = 'container__hash container__hash--match'
+          helmClass = 'container__helm container__helm--match'
+        } else if (helmHash && helmHash !== hash) {
+          hashClass = 'container__hash container__hash--mismatch'
+          helmClass = 'container__helm container__helm--mismatch'
+        } else {
+          hashClass = 'container__hash'
+          helmClass = 'container__helm'
+        }
 
         return {
           name: c.name,
@@ -100,11 +170,15 @@ export default class PodsTable extends React.Component {
           classes: classes.join(' '),
           msg: msg,
           image: c.image,
+          hash, 
+          helmHash,
+          hashClass,
+          helmClass,
           port
         }
       })
 
-      let viewEventsLink = (p.events.length) ? (<a onClick={() => this.handleClickPodEvents(p)} className={p.showEvents ? 'icon icon-down-open': 'icon icon-right-open'}>Events</a>) : '' 
+      
 
       return {
         name: p.metadata.name,
@@ -113,44 +187,16 @@ export default class PodsTable extends React.Component {
         readyContainers: readyCount,
         raw: p,
         events: p.events,
-        showEvents: p.showEvents,
-        viewEventsLink
+        showEvents: p.showEvents
       }
     })
+
+    
 
     return (
       <table>
         
-          {podDetails.map(p => (
-            <tbody key={p.name}>
-            <tr className="pod--summary">
-              <td>
-                {p.name}
-                {p.viewEventsLink}
-              </td>
-              <td>{p.readyContainers}/{p.totalContainers}</td>
-              <td>{p.containers.map(c =>(
-                <div key={c.name} className={c.classes}>
-                  <span className="container__links">
-                    <a className="container__link" onClick={(e) => this.handleClickLog(p, c)}>{c.name}</a>
-                    <a className="container__link container__link--port" onClick={(e) => this.handleClickPort(p, c)}>{c.port}</a>
-                  </span>
-                  <span className="container__image">{c.image}</span>
-                  <span className="container__msg">{c.msg}</span>
-                </div>
-              ))}
-              </td>
-              <td>
-                <OverlayButton label="JSON" data={p.raw} />
-              </td>
-            </tr>
-            <tr>
-              <td colSpan="999" className={(p.showEvents && p.events) ? 'pod__events' : 'pod__events pod__events--hidden'}>
-                <EventsTable data={p.events} template="pods" />
-              </td>
-            </tr>
-            </tbody>
-          ))}
+          {podDetails.map(p => this.getPodHtml(p))}
         
       </table>
     )

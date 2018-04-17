@@ -1,6 +1,6 @@
 import React from 'react'
 import cookie from 'react-cookies'
-import utils from './Utils.Service'
+import utils from './UtilsService'
 
 export default class Expandable extends React.Component {
   constructor (props) {
