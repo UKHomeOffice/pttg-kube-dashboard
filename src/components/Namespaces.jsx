@@ -1,28 +1,62 @@
 import React from 'react'
 import { NavLink, Route } from 'react-router-dom'
 import Namespace from './Namespace'
+import Loader from './Loader'
+import Helm from './Helm'
 
 export default class Namespaces extends React.Component {
   constructor (props) {
     super(props)
+    console.log('props', this.props)
     this.state = {
-      ns: null,
-      evts: null,
-      pods: null
+      cxt: null,
+      helm: null
     }
   }
 
-  handleClick (ns, e) {
-    this.setState({ ns })
+  refreshHelm (cxt) {
+    if (!cxt || cxt === this.state.cxt) {
+      return
+    }
+    let url = `/api/context/${cxt}/helm`
+    fetch(url)
+    .then(res => res.json())
+    .then(
+      (result) => {
+        console.log('Helm', result)
+        if (!result.error) {
+          this.setState({
+            cxt: cxt,
+            helm: result
+          })
+        }
+      },
+      (error) => {
+        console.log('Helm error')
+        this.setState({
+          cxt: cxt,
+          helm: {}
+        })
+      }
+    )
+  }
+
+  componentDidMount () {
+    if (this.props.context && this.props.context.name) {
+      this.refreshHelm(this.props.context.name)
+    }
+  }
+
+  componentWillReceiveProps (nextProps, nextState) {
+    if (nextProps.context && nextProps.context.name) {
+      this.refreshHelm(nextProps.context.name)
+    }
   }
 
   render () {
     let con = this.props.context
-    console.log('render Namespaces')
-
-    if (con && con.namespaces) {
-
-      // const quotacomponent = (this.props.match.params.namespace) ? (<Quota context={con.name} namespace="{ns}"></Quota>) : ''
+    
+    if (con && con.namespaces && this.state.helm !== null) {
       return (
         <div className='namespace__nav'>
           <ul>
@@ -33,8 +67,8 @@ export default class Namespaces extends React.Component {
             ))}
           </ul>
           
-          <Route path='/context/:context/namespace/:namespace' component={Namespace} exact />
           
+          <Route path='/context/:context/namespace/:namespace' component={Namespace} exact />
         </div>
       )
     } else {

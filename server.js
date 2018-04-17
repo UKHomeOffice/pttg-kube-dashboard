@@ -1,15 +1,12 @@
-const fs = require('fs')
+
 const express = require('express')
-const serveStatic = require('serve-static')
-const http = require('http')
-const https = require('https')
 const app = express()
 const _ = require('underscore')
 const path = require('path')
 const exec = require('child_process').exec
 const config = require('./config')
 const bodyParser = require('body-parser')
-// app.use(serveStatic('dist/', { 'index': ['index.html'] }))
+const helm = require('./helm')
 
 app.use(bodyParser.json())
 
@@ -17,12 +14,7 @@ app.get('/config', (req, res) => {
   res.send(config)
 })
 
-const namespaces = {
-  pttgfsdev: {
-    label: 'pttg-fs-dev',
-    name: 'pttg-fs-dev'
-  }
-}
+helm.init()
 
 const execCmd = (cmd) => {
   console.log(cmd)
@@ -55,10 +47,14 @@ const stdCmdAndResponse = (res, cmd, postProcess) => {
     })
 }
 
-// app.get('/api/namespace', (req, res) => {
-//   res.setHeader('Content-Type', 'application/json')
-//   res.send(_.values(namespaces))
-// })
+app.get('/api/context/:con/helm', (req, res) => {
+  let versions = helm.getHelmVersions(req.params.con)
+  if (versions) {
+    res.send(versions)
+    return
+  }
+  res.send({})
+})
 
 app.get('/api/context/:con/namespace/:ns/quota', (req, res) => {
   const cmd = `kubectl --context=${req.params.con} get resourcequota -o=json --namespace=${req.params.ns}`

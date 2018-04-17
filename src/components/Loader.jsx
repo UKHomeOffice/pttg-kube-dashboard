@@ -12,12 +12,10 @@ export default class Loader extends React.Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount')
     this.refresh(this.props.url)
   }
 
   componentWillReceiveProps(nextProps, nextState) {
-    console.log('componentWillReceiveProps', nextProps)
     this.refresh(nextProps.url)
   }
 
@@ -62,6 +60,9 @@ export default class Loader extends React.Component {
     if (this.state.isLoading) {
       classes.push('loader--loading')
       loadStatus = <a className="icon icon-spin2 animate-spin">Loading</a>
+    }
+    if (this.props.refresh === false) {
+      loadStatus = ''
     }
     return (<div className={classes.join(' ')}>{loadStatus}{childrenWithData}</div>)
   }

@@ -49,13 +49,7 @@ export default class Contexts extends React.Component {
 
   render () {
     const { contexts } = this.state
-    // let contextdetail = 'Loading'
-    // if (this.props.match.params.context) {
-    //   contextdetail = (<div className="context__detail">
-    //     <Ingress context={this.state.selectedContext}></Ingress>
-    //     <Namespaces context={this.state.selectedContext}></Namespaces>
-    //   </div>)
-    // }
+
 
     return (
       <div className='context__nav'>

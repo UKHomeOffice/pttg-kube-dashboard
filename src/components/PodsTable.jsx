@@ -11,10 +11,11 @@ export default class PodsTable extends React.Component {
     }
   }
 
-  showOverlay (data) {
+  showOverlay (data, render) {
     var clickEvent = new CustomEvent('overlay_show', {
       detail: {
-        json: data
+        json: data,
+        render
       }
     });
 
@@ -44,6 +45,21 @@ export default class PodsTable extends React.Component {
     this.setState({ data: this.state.data })
   }
 
+  handleClickPort (p, c) {
+    let data = {
+      data: {
+        'port-forward': `kubectl --context=${this.props.context} -n=${this.props.namespace} port-forward ${p.name} 8888:${c.port}`,
+        'sh': `kubectl --context=${this.props.context} -n=${this.props.namespace} exec -ti ${p.name} -c${c.name} sh`,
+        'bash': `kubectl --context=${this.props.context} -n=${this.props.namespace} exec -ti ${p.name} -c${c.name} bash`,
+      },
+      kind: 'ConfigMap',
+      metadata: {
+        name: c.name
+      }
+    }
+    this.showOverlay(data, true)
+  }
+
   render() {
     let data = this.state.data || this.props.data
     if (!_.isArray(data)) {
@@ -71,6 +87,12 @@ export default class PodsTable extends React.Component {
           msg = c.state.waiting.message
         }
 
+        let containerSpec = _.find(p.spec.containers, (cspec => {
+          return cspec.name === c.name
+        }))
+        
+        let port = (containerSpec && containerSpec.ports && containerSpec.ports[0]) ? containerSpec.ports[0].containerPort : ''
+
         return {
           name: c.name,
           ready: c.ready,
@@ -78,6 +100,7 @@ export default class PodsTable extends React.Component {
           classes: classes.join(' '),
           msg: msg,
           image: c.image,
+          port
         }
       })
 
@@ -108,7 +131,10 @@ export default class PodsTable extends React.Component {
               <td>{p.readyContainers}/{p.totalContainers}</td>
               <td>{p.containers.map(c =>(
                 <div key={c.name} className={c.classes}>
-                  <a onClick={(e) => this.handleClickLog(p, c)}>{c.name}</a>
+                  <span className="container__links">
+                    <a className="container__link" onClick={(e) => this.handleClickLog(p, c)}>{c.name}</a>
+                    <a className="container__link container__link--port" onClick={(e) => this.handleClickPort(p, c)}>{c.port}</a>
+                  </span>
                   <span className="container__image">{c.image}</span>
                   <span className="container__msg">{c.msg}</span>
                 </div>

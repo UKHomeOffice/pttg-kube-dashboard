@@ -16,6 +16,11 @@ h2 {
   font-size: 16px; 
 }
 
+
+h2 a {
+  display: inline-block; 
+}
+
 header, footer {
   background-color: #eee;
   padding: 10px 20px;
@@ -34,6 +39,10 @@ td, th{
   border-color: #ccc;
   border-style: solid;
   padding: 4px;
+}
+
+a:hover {
+  color: #f00;
 }
 
 .title--collapsed {
@@ -100,21 +109,25 @@ pre {
 }
 
 
+
 .container {
   border-width: 1px 0 0 0;
   border-style: solid;
   border-color: #ccc;
-  padding: 0 0 4px 0;
+  padding: 4px 0 4px 0;
+  margin-top: 4px;
 }
 .container:first-child {
   border: none;
+  margin-top: 0;
+  padding-top: 0;
 }
 
-.container span {
+/*.container span {
   padding: 0 4px;
   display: block;
 }
-
+*/
 .container__image {
   font-size: 10px;
 }
@@ -124,6 +137,24 @@ pre {
   font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 }
 
+
+.container__links {
+  display: block;
+  position: relative;
+  padding-right: 80px;
+}
+
+.container__link {
+  padding: 0;
+}
+
+.container__link--port {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 10px;
+}
+
 .overlay {
   position: absolute;
   top: 0;
@@ -131,12 +162,18 @@ pre {
   width: 100%;
   background-color: #fff;
   scroll: auto;
+  z-index: 900;
 }
 
 .overlay .button {
   position: fixed;
-  top: 4px;
-  right: 4px;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding-top: 7px;
+  box-sizing: border-box;
 }
 
 .overlay__content {

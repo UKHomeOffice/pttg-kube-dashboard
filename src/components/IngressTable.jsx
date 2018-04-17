@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'underscore'
+import OverlayButton from './OverlayButton'
 
 export default class IngressTable extends React.Component {
   render() {
@@ -18,7 +19,7 @@ export default class IngressTable extends React.Component {
               <td>{ing.spec.rules[0].http.paths[0].backend.serviceName}</td>
               <td>{ing.spec.rules[0].http.paths[0].backend.servicePort}</td>
               <td>
-                <a className="button" onClick={(e) => this.handleClick(ing)}>JSON</a>
+                <OverlayButton label="JSON" data={ing} />
               </td>
             </tr>
           ))}

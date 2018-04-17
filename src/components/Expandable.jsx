@@ -27,7 +27,7 @@ export default class Expandable extends React.Component {
     cookie.save('show' + this.props.id, this.state.show)
 
     let toggle = (
-      <h2 onClick={() => this.handleClick()} className={this.state.show ? 'icon icon-down-open': 'icon icon-right-open'}>{this.state.title}</h2>
+      <h2><a onClick={() => this.handleClick()} className={this.state.show ? 'icon icon-down-open': 'icon icon-right-open'}>{this.state.title}</a></h2>
     )
 
     let content = ''
