@@ -1,0 +1,71 @@
+
+.pod__summary td{
+  border-width: 2px 1px 1px 1px;
+
+}
+
+.pod__summary .container--ready a{
+  color: #339900;
+}
+
+.pod__summary .container--notready a{
+  color: #cc0000;
+}
+
+.pod__summary .container--terminated {
+  text-decoration-line: line-through;
+}
+
+.pod__events--hidden {
+  display: none;
+}
+
+
+.container__image {
+  font-size: 10px;
+}
+
+.container__msg {
+  font-size: 12px;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+
+.container__links {
+  display: block;
+  position: relative;
+  padding-right: 80px;
+}
+
+.container__link {
+  padding: 0;
+}
+
+.container__link--port {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  font-size: 10px;
+}
+
+.container__hash {
+  width: 50px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.container__helm {
+  width: 50px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.container__hash--match, 
+.container__helm--match {
+  color: #339900;
+}
+
+.container__hash--mismatch, 
+.container__helm--mismatch {
+  color: #cc0000;
+}

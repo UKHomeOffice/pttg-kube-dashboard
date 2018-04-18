@@ -112,6 +112,13 @@ app.get('/api/context/:con/namespace/:ns/events', (req, res) => {
   })
 })
 
+app.get('/api/context/:con/namespace/:ns/jobs', (req, res) => {
+  const cmd = `kubectl --context=${req.params.con} get jobs -o=json --namespace=${req.params.ns}`
+  stdCmdAndResponse(res, cmd, (result) => {
+    return result.items
+  })
+})
+
 app.get('/api/context/:con/namespace/:ns/pods', (req, res) => {
   // get the events
   const ecmd = `kubectl --context=${req.params.con} get events -o=json --namespace=${req.params.ns}`

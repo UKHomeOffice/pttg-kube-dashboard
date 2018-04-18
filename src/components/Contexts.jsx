@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import './Contexts.css'
+import './Contexts.scss'
 import Namespaces from './Namespaces'
 
 import { Route } from 'react-router-dom'
@@ -52,11 +52,11 @@ export default class Contexts extends React.Component {
 
 
     return (
-      <div className='context__nav'>
-        <ul>
+      <div>
+        <ul className='context__nav'>
           {contexts.map(c => (
-            <li key={c.name}>
-              <NavLink to={`/context/${c.name}`} activeClassName='active' onClick={this.handleClick.bind(this, c)}>{c.name}</NavLink>
+            <li key={c.name} className="context__navli">
+              <NavLink to={`/context/${c.name}`} activeClassName='context__navlink--active' className="context__navlink" onClick={this.handleClick.bind(this, c)}>{c.name}</NavLink>
             </li>
           ))}
         </ul>

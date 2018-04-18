@@ -7,6 +7,7 @@ import SecretsTable from './SecretsTable'
 import PodsTable from './PodsTable'
 import EventsTable from './EventsTable'
 import QuotaTable from './QuotaTable'
+import JobsTable from './JobsTable'
 // import ConfigMapsTable from './ConfigMaps.Table'
 
 
@@ -30,7 +31,8 @@ export default class Namespace extends React.Component {
     let urlEvents = `/api/context/${cxt}/namespace/${ns}/events`
     let urlDeployments = `/api/context/${cxt}/namespace/${ns}/deployments`
     let urlPods = `/api/context/${cxt}/namespace/${ns}/pods`
-    return <div>
+    let urlJobs = `/api/context/${cxt}/namespace/${ns}/jobs`
+    return <div className="ns">
       <Expandable context={cxt} namespace={ns} id="quota">
         <Loader url={urlQuota}><QuotaTable /></Loader>
       </Expandable>
@@ -54,6 +56,11 @@ export default class Namespace extends React.Component {
       <Expandable context={cxt} namespace={ns} id="deployments">
         <Loader url={urlDeployments}><DeploymentsTable /></Loader>
       </Expandable>
+
+      <Expandable context={cxt} namespace={ns} id="jobs">
+        <Loader url={urlJobs}><JobsTable context={cxt} namespace={ns} /></Loader>
+      </Expandable>
+
       <Expandable context={cxt} namespace={ns} id="pods">
         <Loader url={urlPods}><PodsTable context={cxt} namespace={ns} /></Loader>
       </Expandable>

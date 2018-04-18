@@ -1,0 +1,31 @@
+@import '../variables';
+
+.context__nav {
+  background-color: $contextBg;
+  padding: 0;
+  margin: 0;
+}
+
+.context__navli {
+  display: inline-block;
+  list-style: none;
+  padding: 4px 0 0 0;
+  margin: 0;
+}
+
+.context__navlink {
+  display: block;
+  padding: 4px;
+  margin: 0 4px;
+  color: #fff;
+  background-color: $contextBg;
+  &:hover {
+    color: #fff !important;
+    background-color: lighten($contextBg, 10); 
+  }
+}
+
+.context__navlink--active {
+  background-color: $green;
+  color: #fff;
+}

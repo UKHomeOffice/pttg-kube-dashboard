@@ -5,6 +5,8 @@ import Loader from './Loader'
 import Helm from './Helm'
 import HelmService from './HelmService'
 
+import './Namespaces.scss'
+
 export default class Namespaces extends React.Component {
   constructor (props) {
     super(props)
@@ -61,11 +63,11 @@ export default class Namespaces extends React.Component {
     
     if (con && con.namespaces && this.state.helm !== null) {
       return (
-        <div className='namespace__nav'>
-          <ul>
+        <div>
+          <ul className='namespace__nav'>
             {con.namespaces.map(n => (
-              <li key={n}>
-                <NavLink to={`/context/${con.name}/namespace/${n}`} activeClassName='active'> {n}</NavLink>
+              <li key={n} className="namespace__navli">
+                <NavLink to={`/context/${con.name}/namespace/${n}`} activeClassName='namespace__navlink--active' className="namespace__navlink"> {n}</NavLink>
               </li>
             ))}
           </ul>

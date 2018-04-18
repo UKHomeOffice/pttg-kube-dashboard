@@ -9,9 +9,6 @@ export default class Layout extends React.Component {
           <h1>Kubernetes</h1>
         </header>
         <main className="app-content">{this.props.children}</main>
-        <footer>
-          <p>FOOTER</p>
-        </footer>
       </div>
     );
   }

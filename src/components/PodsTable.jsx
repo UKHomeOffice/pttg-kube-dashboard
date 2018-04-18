@@ -4,6 +4,8 @@ import EventsTable from './EventsTable'
 import OverlayButton from './OverlayButton'
 import HelmService from './HelmService'
 
+import './PodsTable.css'
+
 export default class PodsTable extends React.Component {
   constructor (props) {
     super(props)
@@ -39,7 +41,7 @@ export default class PodsTable extends React.Component {
 
   handleClickPodEvents (p) {
     let data = this.state.data || this.props.data
-    let pod = _.find(data, (pod) => p.metadata.name === pod.metadata.name)
+    let pod = _.find(data, (pod) => p.name === pod.metadata.name)
     if (pod) {
       pod.showEvents = !pod.showEvents
     }
@@ -70,11 +72,11 @@ export default class PodsTable extends React.Component {
     let viewEventsLink = (p.events.length) ? (<a onClick={() => this.handleClickPodEvents(p)} className={p.showEvents ? 'icon icon-down-open': 'icon icon-right-open'}>Events</a>) : '' 
 
     return (
-      <tbody key={p.name}>
-        <tr className="pod--summary">
+      <tbody key={p.name} className="pod">
+        <tr className="pod__summary">
           <td rowSpan={p.totalContainers}>
             {p.name}
-            {p.viewEventsLink}
+            {viewEventsLink}
           </td>
           <td rowSpan={p.totalContainers}>{p.readyContainers}/{p.totalContainers}</td>
           {containerWithHTMLfirst.html}
@@ -85,7 +87,7 @@ export default class PodsTable extends React.Component {
         {containersWithHtml.map(c => (
           <tr key={c.name}>{c.html}</tr>
         ))}
-        <tr>
+        <tr className="pod__summary">
           <td colSpan="999" className={(p.showEvents && p.events) ? 'pod__events' : 'pod__events pod__events--hidden'}>
             <EventsTable data={p.events} template="pods" />
           </td>
@@ -194,9 +196,9 @@ export default class PodsTable extends React.Component {
     
 
     return (
-      <table>
+      <table className="podtable">
         <thead>
-          <tr>
+          <tr className="podtable__headings">
             <th>Pod</th>
             <th></th>
             <th>Container</th>
