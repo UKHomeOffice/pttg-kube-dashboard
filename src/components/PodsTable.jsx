@@ -195,9 +195,17 @@ export default class PodsTable extends React.Component {
 
     return (
       <table>
-        
-          {podDetails.map(p => this.getPodHtml(p))}
-        
+        <thead>
+          <tr>
+            <th>Pod</th>
+            <th></th>
+            <th>Container</th>
+            <th>Version</th>
+            <th>Helm</th>
+            <th></th>
+          </tr>
+        </thead>
+        {podDetails.map(p => this.getPodHtml(p))}
       </table>
     )
   }  
