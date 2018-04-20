@@ -3,6 +3,7 @@ import _ from 'underscore'
 import EventsTable from './EventsTable'
 import OverlayButton from './OverlayButton'
 import HelmService from './HelmService'
+import EnvTable from './EnvTable'
 
 import './PodsTable.css'
 
@@ -69,7 +70,7 @@ export default class PodsTable extends React.Component {
       return c
     })
     let containerWithHTMLfirst = containersWithHtml.shift()
-    let viewEventsLink = (p.events.length) ? (<a onClick={() => this.handleClickPodEvents(p)} className={p.showEvents ? 'icon icon-down-open': 'icon icon-right-open'}>Events</a>) : '' 
+    let viewEventsLink = (p.events.length) ? (<a onClick={() => this.handleClickPodEvents(p)} className={p.showEvents ? 'pod__eventslink icon icon-down-open': 'pod__eventslink icon icon-right-open'}>Events</a>) : '' 
 
     return (
       <tbody key={p.name} className="pod">
@@ -87,7 +88,7 @@ export default class PodsTable extends React.Component {
         {containersWithHtml.map(c => (
           <tr key={c.name}>{c.html}</tr>
         ))}
-        <tr className="pod__summary">
+        <tr>
           <td colSpan="999" className={(p.showEvents && p.events) ? 'pod__events' : 'pod__events pod__events--hidden'}>
             <EventsTable data={p.events} template="pods" />
           </td>
@@ -108,9 +109,16 @@ export default class PodsTable extends React.Component {
           <span className="container__msg">{c.msg}</span>
         </div>
       </td>,
+      <td key={c.name + 'env'} className=''><OverlayButton label="ENV" html={c.envHtml} /></td>,
       <td key={c.name + 'hash'} className={c.hashClass}>{c.hash}</td>,
       <td key={c.name + 'helm'} className={c.helmClass}>{c.helmHash}</td>
     ]
+  }
+
+  getEnvHtml (c) {
+    return (
+      <EnvTable data={c} />
+    )
   }
 
   render() {
@@ -176,7 +184,9 @@ export default class PodsTable extends React.Component {
           helmHash,
           hashClass,
           helmClass,
-          port
+          port,
+          env: containerSpec.env,
+          envHtml: this.getEnvHtml(containerSpec)
         }
       })
 

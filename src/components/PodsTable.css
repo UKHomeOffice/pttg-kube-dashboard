@@ -4,15 +4,19 @@
 
 }
 
-.pod__summary .container--ready a{
+.pod__eventslink {
+  display: block;
+}
+
+.container--ready a{
   color: #339900;
 }
 
-.pod__summary .container--notready a{
+.container--notready a{
   color: #cc0000;
 }
 
-.pod__summary .container--terminated {
+.container--terminated {
   text-decoration-line: line-through;
 }
 
@@ -22,11 +26,15 @@
 
 
 .container__image {
+  display: block;
+  display: block;
   font-size: 10px;
+  padding: 2px 0;
 }
 
 .container__msg {
-  font-size: 12px;
+  display: block;
+  font-size: 10px;
   font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 }
 

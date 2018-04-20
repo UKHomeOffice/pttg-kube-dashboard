@@ -1,9 +1,15 @@
 import React from 'react'
+import _ from 'underscore'
 
 export default class OverlayButton extends React.Component {
-  handleClick (dep) {
-    let detail = {
-      json: dep
+  handleClick () {
+    let detail = {}
+    if (_.has(this.props, 'data')) {
+      detail.json = this.props.data
+    }
+
+    if (_.has(this.props, 'html')) {
+      detail.html = this.props.html
     }
 
     if (this.props.render) {
@@ -16,6 +22,6 @@ export default class OverlayButton extends React.Component {
 
  
   render() {
-    return (<a className="button" onClick={(e) => this.handleClick(this.props.data)}>{this.props.label}</a>)     
+    return (<a className="button" onClick={(e) => this.handleClick()}>{this.props.label}</a>)     
   }
 }
