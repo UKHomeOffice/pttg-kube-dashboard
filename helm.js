@@ -8,6 +8,13 @@ let helmData = {}
 
 const helm = {
   init: () => {
+    try {
+      fs.accessSync('/etc/passwd', fs.constants.R_OK | fs.constants.W_OK)
+    } catch (err) {
+      console.log(err ? 'no access!' : 'can read/write')
+      return
+    }
+
     helmData = {}
     _.each(config.contexts, cxt => {
       if (cxt.helm && cxt.helm.repo) {
