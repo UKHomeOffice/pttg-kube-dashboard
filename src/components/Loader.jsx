@@ -7,7 +7,10 @@ export default class Loader extends React.Component {
     this.state = {
       data: null,
       url: this.props.url,
-      previousUrl: ''
+      previousUrl: '',
+      autoRefresh: Math.round(Number(this.props.autoRefresh)) || 0,
+      countDown: 0,
+      timer: null
     }
   }
 
@@ -19,11 +22,17 @@ export default class Loader extends React.Component {
     this.refresh(nextProps.url)
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.state.timer)
+  }
+
   refresh(url) {
+    clearTimeout(this.state.timer)
     this.setState({
       isLoading: true,
       isLoaded: false,
-      url: url
+      url: url,
+      countDown: this.state.autoRefresh
     })
     fetch(url)
       .then(res => res.json())
@@ -37,7 +46,7 @@ export default class Loader extends React.Component {
               url: url
             })
 
-            console.log('Loaded', result)
+            this.checkAgain(url)
           }
         },
         (error) => {
@@ -51,11 +60,30 @@ export default class Loader extends React.Component {
       )
   }
 
+  checkAgain (url) {
+    if (!this.state.autoRefresh) {
+      return
+    }
+
+    if (!this.state.countDown) {
+      this.refresh(url)
+    } else {
+      let countDown = this.state.countDown -1
+      this.setState({
+        countDown,
+        timer: setTimeout(() => this.checkAgain(url),  1000)
+      })
+    }
+    
+  }
+
   render () {
+
+    let counter = (this.state.autoRefresh) ? this.state.countDown + 's' : ''
     const { children } = this.props
     let data = this.state.data
-    let childrenWithData = React.Children.map(children, child => React.cloneElement(child, {data: data}))
-    let loadStatus = <a onClick={() => this.refresh(this.state.url)} className="icon icon-spin2">Refresh</a>
+    let childrenWithData = React.Children.map(children, child => React.cloneElement(child, {data: data, parent: this}))
+    let loadStatus = <a onClick={() => this.refresh(this.state.url)} className="icon icon-spin2">Refresh {counter}</a>
     let classes = ['loader']
     if (this.state.isLoading) {
       classes.push('loader--loading')

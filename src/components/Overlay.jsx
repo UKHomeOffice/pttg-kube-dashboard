@@ -121,7 +121,7 @@ export default class Overlay extends React.Component {
               <th>Value</th>
             </tr>
           {summary.map((obj) => (
-            <tr className="secret">
+            <tr className="secret" key={obj.key}>
               <th className="secret__key">{obj.key}</th>
               <td className="secret__value" onClick={(e) => e.stopPropagation()}><Clipboard data-clipboard-text={obj.val}>{obj.brief}</Clipboard></td>
             </tr>
