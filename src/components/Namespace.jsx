@@ -54,15 +54,15 @@ export default class Namespace extends React.Component {
       </Expandable>
 
       <Expandable context={cxt} namespace={ns} id="deployments">
-        <Loader url={urlDeployments} autoRefresh="30"><DeploymentsTable context={cxt} namespace={ns} /></Loader>
+        <Loader url={urlDeployments}><DeploymentsTable context={cxt} namespace={ns} /></Loader>
       </Expandable>
 
       <Expandable context={cxt} namespace={ns} id="jobs">
-        <Loader url={urlJobs} autoRefresh="5"><JobsTable context={cxt} namespace={ns} /></Loader>
+        <Loader url={urlJobs}><JobsTable context={cxt} namespace={ns} /></Loader>
       </Expandable>
 
       <Expandable context={cxt} namespace={ns} id="pods">
-        <Loader url={urlPods} autoRefresh="10"><PodsTable context={cxt} namespace={ns} /></Loader>
+        <Loader url={urlPods}><PodsTable context={cxt} namespace={ns} /></Loader>
       </Expandable>
     </div>
   }

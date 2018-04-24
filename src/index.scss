@@ -34,6 +34,7 @@ main {
 }
 
 table {
+  width: 100%;
   border-collapse: collapse;
 }
 
@@ -62,11 +63,8 @@ a:hover {
   display: inline-block;
   background-color: $green;
   color: #fff;
-  border-width: 1px;
-  border-color: #000;
-  border-style: solid;
   padding: 2px;
-  border-radius: 2px;
+  border-radius: 4px;
   font-size: 12px;
   text-rendering: optimizeLegibility;
 }

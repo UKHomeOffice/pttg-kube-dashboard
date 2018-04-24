@@ -26,10 +26,14 @@ const execCmd = (cmd) => {
       }
       try {
         var json = JSON.parse(stdout)
+        json.__cmd = cmd
         return resolve(json)
       } catch (e) {
         // console.log('CAUGHT', e)
-        return resolve({raw: stdout})
+        return resolve({
+          raw: stdout,
+          __cmd: cmd
+        })
       }
     })
   })
@@ -167,12 +171,13 @@ app.get('/api/context/:con/namespace/:ns/pods/:id/log/:container', (req, res) =>
         data.push(lineJson)
       } catch (e) {
         if (l.length) {
-          let prevMsg = _.last(data)
-          if (prevMsg && prevMsg.msg) {
-            prevMsg.msg.push(l)
-          } else {
-            data.push({msg: [l]})
-          }
+          data.push(l)
+          // let prevMsg = _.last(data)
+          // if (prevMsg && prevMsg.msg) {
+          //   prevMsg.msg.push(l)
+          // } else {
+          //   data.push({msg: [l]})
+          // }
         }
       }
     })

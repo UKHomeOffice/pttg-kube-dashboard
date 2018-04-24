@@ -1,0 +1,46 @@
+@import '../variables';
+
+.loader {
+
+}
+
+.loader--loading {
+  color: #999;
+}
+
+.loader__auto--on {
+
+}
+
+.loader__controls {
+  position: absolute;
+  top: 11px;
+  right: 0;
+  border-radius: 4px 4px 0 0;
+  font-size: 12px;
+  background-color: #eee;
+  overflow: hidden;
+  height: 22px;
+}
+
+.loader__refresh {
+  padding: 4px;
+  display: inline-block;
+}
+
+.loader__countdown {
+  padding: 4px;
+  display: inline-block;
+  width: 20px;
+  text-align: center; 
+}
+
+.loader__auto {
+  padding: 4px;
+  display: inline-block;
+}
+
+.loader__auto--on {
+  background-color: $green;
+  color: #fff;
+}

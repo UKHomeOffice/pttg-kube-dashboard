@@ -1,6 +1,7 @@
 import React from 'react'
 import cookie from 'react-cookies'
 import utils from './UtilsService'
+import './Expandable.scss'
 
 export default class Expandable extends React.Component {
   constructor (props) {
@@ -27,17 +28,17 @@ export default class Expandable extends React.Component {
     cookie.save('show' + this.props.id, this.state.show)
 
     let toggle = (
-      <h2><a onClick={() => this.handleClick()} className={this.state.show ? 'icon icon-down-open': 'icon icon-right-open'}>{this.state.title}</a></h2>
+      <h2 class="expandable__header"><a onClick={() => this.handleClick()} className={this.state.show ? 'icon icon-down-open': 'icon icon-right-open'}>{this.state.title}</a></h2>
     )
 
     let content = ''
     if (this.state.show) {
       content = (
-        <div>{this.props.children}</div>
+        <div class="expandable__content">{this.props.children}</div>
       )
     }
-    return <div>
-      {toggle}  
+    return <div className="expandable">
+      {toggle}
       {content}
     </div>
   }

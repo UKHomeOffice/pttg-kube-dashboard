@@ -1,0 +1,15 @@
+.expandable {
+  position: relative;
+}
+
+.expandable__header {
+  border-width: 0 0 1px 0;
+  border-color: #eee;
+  border-style: solid;
+  padding: 10px 0 4px 0;
+  margin: 0;
+}
+
+.expandable__content {
+  padding-bottom: 20px;
+}

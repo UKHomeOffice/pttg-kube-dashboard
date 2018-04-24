@@ -212,6 +212,7 @@ export default class PodsTable extends React.Component {
             <th>Pod</th>
             <th></th>
             <th>Container</th>
+            <th></th>
             <th>Version</th>
             <th>Helm</th>
             <th></th>
