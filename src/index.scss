@@ -46,6 +46,10 @@ td, th{
   vertical-align: top;
 }
 
+th {
+  background-color: #eee;
+}
+
 a {
   text-decoration: none;
   cursor: pointer;
@@ -67,7 +71,6 @@ a:hover {
   border-radius: 4px;
   font-size: 12px;
   text-rendering: optimizeLegibility;
-
   &:hover {
     color: #fff !important;
     background-color: $darkGrey;
@@ -123,6 +126,7 @@ pre {
   scroll: auto;
   z-index: 9000;
   text-align: center;
+  filter: drop-shadow(0 10px 10px #666);
 }
 
 .button--close {
