@@ -6,13 +6,13 @@ export default class QuotaTable extends React.Component {
 
   render() {
     let data = this.props.data
-    if (!_.has(data, 'hard')) {
+    if (!_.has(data, 'status')) {
       return ''
     }
 
     let summary = []
-    _.each(data.hard, (val, key) => {
-      summary.push({key, hard: val, used: data.used[key]})
+    _.each(data.status.hard, (val, key) => {
+      summary.push({key, hard: val, used: data.status.used[key]})
     })
 
     return (

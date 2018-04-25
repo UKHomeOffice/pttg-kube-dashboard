@@ -6,7 +6,7 @@ export default class SecretsTable extends React.Component {
 
   render() {
     let data = this.props.data
-    if (!_.isArray(data)) {
+    if (!data || !_.isArray(data.items)) {
       return ''
     }
 
@@ -20,7 +20,7 @@ export default class SecretsTable extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {data.map(sec => (
+          {data.items.map(sec => (
             <tr key={sec.metadata.name}>
               <td>{sec.metadata.name}</td>
               <td>{Object.keys(sec.data).map((key) => (

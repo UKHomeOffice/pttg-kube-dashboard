@@ -4,6 +4,8 @@ import EventsTable from './EventsTable'
 import OverlayButton from './OverlayButton'
 import HelmService from './HelmService'
 import EnvTable from './EnvTable'
+import Info from './Info'
+import Clipboard from 'react-clipboard.js'
 
 import './PodsTable.css'
 
@@ -42,7 +44,7 @@ export default class PodsTable extends React.Component {
 
   handleClickPodEvents (p) {
     let data = this.state.data || this.props.data
-    let pod = _.find(data, (pod) => p.name === pod.metadata.name)
+    let pod = _.find(data.items, (pod) => p.name === pod.metadata.name)
     if (pod) {
       pod.showEvents = !pod.showEvents
     }
@@ -98,15 +100,28 @@ export default class PodsTable extends React.Component {
   }
 
   getContainerHtml (p, c) {
+    let shortcuts = {
+      'portforward': `kubectl --context=${this.props.context} -n=${this.props.namespace} port-forward ${p.name} 8888:${c.port}`,
+      'sh': `kubectl --context=${this.props.context} -n=${this.props.namespace} exec -ti ${p.name} -c ${c.name} sh`,
+      'bash': `kubectl --context=${this.props.context} -n=${this.props.namespace} exec -ti ${p.name} -c ${c.name} bash`,
+    }
+
     return [
       <td key={c.name}>
         <div className={c.classes}>
           <span className="container__links">
-            <a className="container__link" onClick={(e) => this.handleClickLog(p, c)} title="View logs for container">{c.name}</a>
             <a className="container__link container__link--port" onClick={(e) => this.handleClickPort(p, c)} title="kubectl commands for port forwarding, sh and bash">{c.port}</a>
           </span>
+          <Info title={c.name}>
+            <p><a onClick={(e) => this.handleClickLog(p, c)} className="button" title="View logs for container">View logs for container</a></p>
+            <p>port-forward (local:remote): <Clipboard data-clipboard-text={shortcuts.portforward}>{shortcuts.portforward}</Clipboard></p>
+            <p>sh: <Clipboard data-clipboard-text={shortcuts.sh}>{shortcuts.sh}</Clipboard></p>
+            <p>bash: <Clipboard data-clipboard-text={shortcuts.bash}>{shortcuts.bash}</Clipboard></p>
+            <p><OverlayButton label="View environment variables for container" html={c.envHtml} /></p>
+          </Info>
           <span className="container__image">{c.image}</span>
           <span className="container__msg">{c.msg}</span>
+          
         </div>
       </td>,
       <td key={c.name + 'env'} className=''><OverlayButton label="ENV" html={c.envHtml} /></td>,
@@ -123,14 +138,14 @@ export default class PodsTable extends React.Component {
 
   render() {
     let data = this.state.data || this.props.data
-    if (!_.isArray(data)) {
+    if (!data || !_.isArray(data.items)) {
       return ''
     }
       
     let helm = HelmService.getData(this.props.context)
 
     // EACH POD
-    let podDetails = data.map(p =>{
+    let podDetails = data.items.map(p =>{
       let readyCount = 0
 
       // EACH CONTAINER

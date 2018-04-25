@@ -26,14 +26,10 @@ const execCmd = (cmd) => {
       }
       try {
         var json = JSON.parse(stdout)
-        json.__cmd = cmd
         return resolve(json)
       } catch (e) {
         // console.log('CAUGHT', e)
-        return resolve({
-          raw: stdout,
-          __cmd: cmd
-        })
+        return resolve({ raw: stdout })
       }
     })
   })
@@ -43,6 +39,7 @@ const stdCmdAndResponse = (res, cmd, postProcess) => {
   res.setHeader('Content-Type', 'application/json')
   execCmd(cmd)
     .then((result) => {
+      result.__cmd = cmd
       res.send((postProcess) ? postProcess(result) : result)
     })
     .catch((e) => {
@@ -63,7 +60,10 @@ app.get('/api/context/:con/helm', (req, res) => {
 app.get('/api/context/:con/namespace/:ns/quota', (req, res) => {
   const cmd = `kubectl --context=${req.params.con} get resourcequota -o=json --namespace=${req.params.ns}`
   stdCmdAndResponse(res, cmd, (result) => {
-    return result.items[0].status
+    return {
+      status: result.items[0].status,
+      __cmd: result.__cmd
+    }
   })
 })
 
@@ -77,7 +77,7 @@ app.get('/api/context/:con/namespace/:ns/ingress', (req, res) => {
 app.get('/api/context/:con/namespace/:ns/deployments', (req, res) => {
   const cmd = `kubectl --context=${req.params.con} get deployments -o=json --namespace=${req.params.ns}`
   stdCmdAndResponse(res, cmd, (result) => {
-    return result.items
+    return result
   })
 })
 
@@ -98,28 +98,28 @@ app.post('/api/context/:con/namespace/:ns/deployments/:dep', (req, res) => {
 app.get('/api/context/:con/namespace/:ns/secrets', (req, res) => {
   const cmd = `kubectl --context=${req.params.con} get secrets -o=json --namespace=${req.params.ns}`
   stdCmdAndResponse(res, cmd, (result) => {
-    return result.items
+    return result
   })
 })
 
 app.get('/api/context/:con/namespace/:ns/configmaps', (req, res) => {
   const cmd = `kubectl --context=${req.params.con} get configMaps -o=json --namespace=${req.params.ns}`
   stdCmdAndResponse(res, cmd, (result) => {
-    return result.items
+    return result
   })
 })
 
 app.get('/api/context/:con/namespace/:ns/events', (req, res) => {
   const cmd = `kubectl --context=${req.params.con} get events -o=json --namespace=${req.params.ns}`
   stdCmdAndResponse(res, cmd, (result) => {
-    return result.items
+    return result
   })
 })
 
 app.get('/api/context/:con/namespace/:ns/jobs', (req, res) => {
   const cmd = `kubectl --context=${req.params.con} get jobs -o=json --namespace=${req.params.ns}`
   stdCmdAndResponse(res, cmd, (result) => {
-    return result.items
+    return result
   })
 })
 
@@ -147,7 +147,7 @@ app.get('/api/context/:con/namespace/:ns/pods', (req, res) => {
       _.each(result.items, pod => {
         pod.events = _.has(podEvents, pod.metadata.name) ? podEvents[pod.metadata.name] : []
       })
-      return result.items
+      return result
     })
   })
 })
@@ -155,7 +155,7 @@ app.get('/api/context/:con/namespace/:ns/pods', (req, res) => {
 app.get('/api/context/:con/namespace/:ns/pods/:id/describe', (req, res) => {
   const cmd = `kubectl --context=${req.params.con} describe pod ${req.params.id} -n=${req.params.ns}`
   stdCmdAndResponse(res, cmd, (result) => {
-    return result.items
+    return result
   })
 })
 

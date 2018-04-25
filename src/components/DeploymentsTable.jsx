@@ -39,13 +39,13 @@ export default class DeploymentsTable extends React.Component {
 
   render() {
     let data = this.props.data
-    if (!_.isArray(data)) {
+    if (!data || !_.isArray(data.items)) {
       return ''
     }
 
     if (!this.state.scales) {
       let scales = {}
-      _.each(this.props.data, (dep) => {
+      _.each(this.props.data.items, (dep) => {
         scales[dep.metadata.name] = dep.status.replicas
       })
       this.setState({scales})
@@ -68,7 +68,7 @@ export default class DeploymentsTable extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {data.map(dep => (
+          {data.items.map(dep => (
             <tr key={dep.metadata.name}>
               <td>{dep.metadata.name}</td>
               <td>{dep.status.replicas}</td>

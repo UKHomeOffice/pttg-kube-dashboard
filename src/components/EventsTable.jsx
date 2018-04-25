@@ -7,11 +7,8 @@ export default class EventsTable extends React.Component {
 
   render() {
     let data = this.props.data
-    if (!_.isArray(data)) {
-      return ''
-    }
-
-    if (this.props.template === 'pods') {
+  
+    if (_.isArray(data) && this.props.template === 'pods') {
       return (
         <table>
           <tbody>
@@ -29,10 +26,14 @@ export default class EventsTable extends React.Component {
         </table>
       )  
     }
+
+    if (!data || !_.isArray(data.items)) {
+      return ''
+    }
     return (
       <table>
         <tbody>
-          {data.map(evt => (
+          {data.items.map(evt => (
             <tr key={evt.metadata.name}>
               <td>{evt.firstTimestamp}</td>
               <td>{evt.count}</td>

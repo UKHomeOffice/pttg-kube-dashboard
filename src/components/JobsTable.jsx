@@ -8,12 +8,12 @@ export default class QuotaTable extends React.Component {
 
   render() {
     let data = this.props.data
-    if (!data) {
+    if (!data || !data.items) {
       return ''
     }
 
     let summary = []
-    _.each(data, (j) => {
+    _.each(data.items, (j) => {
       summary.push({
         name: j.metadata.name, 
         desired: j.spec.completions,

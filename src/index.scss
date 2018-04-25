@@ -63,10 +63,23 @@ a:hover {
   display: inline-block;
   background-color: $green;
   color: #fff;
-  padding: 2px;
+  padding: 2px 4px;
   border-radius: 4px;
   font-size: 12px;
   text-rendering: optimizeLegibility;
+
+  &:hover {
+    color: #fff !important;
+    background-color: $darkGrey;
+  }
+}
+
+button[data-clipboard-text] {
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  text-rendering: optimizeLegibility;
+  background-color: #fffed1;
 }
 
 .json {
@@ -108,7 +121,7 @@ pre {
   background-color: #f5f2f0;
   padding-bottom: 10px;
   scroll: auto;
-  z-index: 900;
+  z-index: 9000;
   text-align: center;
 }
 
@@ -122,6 +135,8 @@ pre {
   padding-top: 7px;
   box-sizing: border-box;
 }
+
+
 
 .overlay__content {
   padding: 10px;

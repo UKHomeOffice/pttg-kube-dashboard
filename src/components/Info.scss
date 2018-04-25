@@ -1,0 +1,33 @@
+@import '../variables';
+
+.info {
+  position: relative;
+  &:hover {
+    .info__content {
+      display: block;
+    }
+  }
+  .button {
+    color: #fff;
+  }
+}
+
+.info__content {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  // display: none;
+  background-color: #eee;
+
+  padding: 10px;
+  z-index: 1000;
+  border-radius: 4px;
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 1px;
+
+  p {
+    margin: 0;
+    padding: 0 0 8px 0;
+  }
+}
