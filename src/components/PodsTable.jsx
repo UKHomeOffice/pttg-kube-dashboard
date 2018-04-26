@@ -77,13 +77,13 @@ export default class PodsTable extends React.Component {
     return (
       <tbody key={p.name} className="pod">
         <tr className="pod__summary">
-          <td rowSpan={p.totalContainers}>
+          <td rowSpan={p.containers.length}>
             {p.name}
             {viewEventsLink}
           </td>
-          <td rowSpan={p.totalContainers}>{p.readyContainers}/{p.totalContainers}</td>
+          <td rowSpan={p.containers.length}>{p.readyContainers}/{p.totalContainers}</td>
           {containerWithHTMLfirst.html}
-          <td rowSpan={p.totalContainers}>
+          <td rowSpan={p.containers.length}>
             <OverlayButton label="JSON" data={p.raw} />
           </td>
         </tr>
@@ -100,10 +100,20 @@ export default class PodsTable extends React.Component {
   }
 
   getContainerHtml (p, c) {
+    console.log(c)
+    let shortcutHtml = ''
     let shortcuts = {
       'portforward': `kubectl --context=${this.props.context} -n=${this.props.namespace} port-forward ${p.name} 8888:${c.port}`,
       'sh': `kubectl --context=${this.props.context} -n=${this.props.namespace} exec -ti ${p.name} -c ${c.name} sh`,
       'bash': `kubectl --context=${this.props.context} -n=${this.props.namespace} exec -ti ${p.name} -c ${c.name} bash`,
+    }
+
+    if (!c.initContainer) {
+      shortcutHtml = [
+        (<p>port-forward (local:remote): <Clipboard data-clipboard-text={shortcuts.portforward}>{shortcuts.portforward}</Clipboard></p>),
+        (<p>sh: <Clipboard data-clipboard-text={shortcuts.sh}>{shortcuts.sh}</Clipboard></p>),
+        (<p>bash: <Clipboard data-clipboard-text={shortcuts.bash}>{shortcuts.bash}</Clipboard></p>),
+      ]
     }
 
     return [
@@ -114,10 +124,8 @@ export default class PodsTable extends React.Component {
           </span>
           <Info title={c.name}>
             <p><a onClick={(e) => this.handleClickLog(p, c)} className="button" title="View logs for container">View logs for container</a></p>
-            <p>port-forward (local:remote): <Clipboard data-clipboard-text={shortcuts.portforward}>{shortcuts.portforward}</Clipboard></p>
-            <p>sh: <Clipboard data-clipboard-text={shortcuts.sh}>{shortcuts.sh}</Clipboard></p>
-            <p>bash: <Clipboard data-clipboard-text={shortcuts.bash}>{shortcuts.bash}</Clipboard></p>
             <p><OverlayButton label="View environment variables for container" html={c.envHtml} /></p>
+            {shortcutHtml}
           </Info>
           <span className="container__image">{c.image}</span>
           <span className="container__msg">{c.msg}</span>
@@ -148,31 +156,41 @@ export default class PodsTable extends React.Component {
     let podDetails = data.items.map(p =>{
       let readyCount = 0
 
+      let initContainers = p.spec.initContainers || []
+      _.each(initContainers, c => {
+        c.initContainer = true
+      })
+
+      
+      let allContainers = initContainers.concat(p.spec.containers)
+
       // EACH CONTAINER
-      let containers = p.status.containerStatuses.map(c => {
-        readyCount+= (c.ready) ? 1 : 0
+      let containers = allContainers.map(c => {
+        let status = _.findWhere(c.initContainer ? p.status.initContainerStatuses: p.status.containerStatuses, { name: c.name }) || {}
+        
+        readyCount+= (status.ready && !c.initContainer) ? 1 : 0
         let classes = ['container']
         let msg = ''
 
-        if (c.ready) {
+        if (status.ready) {
           classes.push('container--ready')
         } else {
           classes.push('container--notready')
         }
 
-        if (_.has(c.state, 'terminated')) {
+        if (_.has(status.state, 'terminated')) {
           classes.push('container--terminated')
         }
 
-        if (_.has(c.state, 'waiting')) {
-          msg = c.state.waiting.message
+        if (_.has(status.state, 'waiting')) {
+          msg = status.state.waiting.message
         }
 
-        let containerSpec = _.find(p.spec.containers, (cspec => {
-          return cspec.name === c.name
-        }))
+        if (c.initContainer) {
+          classes.push('container--init')
+        }
         
-        let port = (containerSpec && containerSpec.ports && containerSpec.ports[0]) ? containerSpec.ports[0].containerPort : ''
+        let port = (c && c.ports && c.ports[0]) ? c.ports[0].containerPort : ''
         let hash = c.image.replace(/[^:]*:(a-z0-9)*/i, '$1')
         let helmHash = helm[c.name] || null
         let helmClass
@@ -200,17 +218,16 @@ export default class PodsTable extends React.Component {
           hashClass,
           helmClass,
           port,
-          env: containerSpec.env,
-          envHtml: this.getEnvHtml(containerSpec)
+          env: c.env,
+          envHtml: this.getEnvHtml(c),
+          initContainer: c.initContainer
         }
       })
-
-      
 
       return {
         name: p.metadata.name,
         containers,
-        totalContainers: containers.length,
+        totalContainers: p.spec.containers.length,
         readyContainers: readyCount,
         raw: p,
         events: p.events,
