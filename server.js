@@ -81,7 +81,27 @@ app.get('/api/context/:con/namespace/:ns/deployments', (req, res) => {
   })
 })
 
-app.post('/api/context/:con/namespace/:ns/deployments/:dep', (req, res) => {
+app.post('/api/context/:con/namespace/:ns/deployments/:dep/deploy', (req, res) => {
+  let project = req.params.dep
+  let build = req.body.build
+  let version = req.body.version
+  let env = req.body.env
+
+  console.log(build, project, version, env)
+
+  if (build && env) {
+    const cmd = `drone -s ${config.drone.server} -t ${config.drone.token} deploy -p IMAGE_VERSION=${build} UKHomeOffice/${project} ${version} ${env}`
+    console.log('cmd', cmd)
+    stdCmdAndResponse(res, cmd, (result) => {
+      return result
+    })
+  } else {
+    res.status(500)
+    res.send()
+  }
+})
+
+app.post('/api/context/:con/namespace/:ns/deployments/:dep/scale', (req, res) => {
   console.log(req.body)
   let rep = Number(req.body.scale)
   if (rep >= 0) {
@@ -181,7 +201,7 @@ app.get('/api/context/:con/namespace/:ns/pods/:id/log/:container', (req, res) =>
         }
       }
     })
-    return {lines: data}
+    return {lines: data, __cmd: cmd}
   })
 })
 

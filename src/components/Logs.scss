@@ -1,0 +1,23 @@
+@import '../variables';
+
+.logs {
+  text-align: left;
+  font-family: $fontMono;
+  font-size: 12px;
+
+  td {
+    border: none;
+    white-space: pre;
+    padding: 1px 8px;
+    .expandable__header {
+      font-size: 12px;
+      font-weight: normal;
+      border: none;
+      padding: 0;
+    }
+  }
+}
+
+.logs__time {
+  width: 150px;
+}

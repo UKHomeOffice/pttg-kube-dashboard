@@ -44,7 +44,6 @@ export default class Overlay extends React.Component {
     }
 
     let content = ''
-
     if (this.state.html) {
       content = this.state.html
     } else if (!this.state.render) {

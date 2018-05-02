@@ -6,6 +6,8 @@ import HelmService from './HelmService'
 import EnvTable from './EnvTable'
 import Info from './Info'
 import Clipboard from 'react-clipboard.js'
+import Loader from './Loader'
+import Logs from './Logs'
 
 import './PodsTable.css'
 
@@ -29,17 +31,25 @@ export default class PodsTable extends React.Component {
   }
 
   handleClickLog (p, c) {
-    this.showOverlay({status: 'LOADING'})
-    fetch(`/api/context/${this.props.context}/namespace/${this.props.namespace}/pods/${p.name}/log/${c.name}`)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.showOverlay(result)
-        },
-        (error) => {
-          this.showOverlay({error: error})
-        }
-      )
+    let u = `/api/context/${this.props.context}/namespace/${this.props.namespace}/pods/${p.name}/log/${c.name}`
+    let html = (<Loader url={u}><Logs /></Loader>)
+    
+    var logsEvent = new CustomEvent('overlay_show', { detail: { html }})
+    document.dispatchEvent(logsEvent);
+
+    // this.showOverlay({status: 'LOADING'})
+    // fetch(`/api/context/${this.props.context}/namespace/${this.props.namespace}/pods/${p.name}/log/${c.name}`)
+    //   .then(res => res.json())
+    //   .then(
+    //     (result) => {
+    //       this.showOverlay({
+    //         html: (<Logs data={result}></Logs>)
+    //       })
+    //     },
+    //     (error) => {
+    //       this.showOverlay({error: error})
+    //     }
+    //   )
   }
 
   handleClickPodEvents (p) {
@@ -88,7 +98,7 @@ export default class PodsTable extends React.Component {
           </td>
         </tr>
         {containersWithHtml.map(c => (
-          <tr key={c.name}>{c.html}</tr>
+          <tr key={p.name + c.name}>{c.html}</tr>
         ))}
         <tr>
           <td colSpan="999" className={(p.showEvents && p.events) ? 'pod__events' : 'pod__events pod__events--hidden'}>
@@ -100,7 +110,6 @@ export default class PodsTable extends React.Component {
   }
 
   getContainerHtml (p, c) {
-    console.log(c)
     let shortcutHtml = ''
     let shortcuts = {
       'portforward': `kubectl --context=${this.props.context} -n=${this.props.namespace} port-forward ${p.name} 8888:${c.port}`,
@@ -109,11 +118,11 @@ export default class PodsTable extends React.Component {
     }
 
     if (!c.initContainer) {
-      shortcutHtml = [
-        (<p>port-forward (local:remote): <Clipboard data-clipboard-text={shortcuts.portforward}>{shortcuts.portforward}</Clipboard></p>),
-        (<p>sh: <Clipboard data-clipboard-text={shortcuts.sh}>{shortcuts.sh}</Clipboard></p>),
-        (<p>bash: <Clipboard data-clipboard-text={shortcuts.bash}>{shortcuts.bash}</Clipboard></p>),
-      ]
+      shortcutHtml = (<div>
+        <p>port-forward (local:remote): <Clipboard data-clipboard-text={shortcuts.portforward}>{shortcuts.portforward}</Clipboard></p>
+        <p>sh: <Clipboard data-clipboard-text={shortcuts.sh}>{shortcuts.sh}</Clipboard></p>
+        <p>bash: <Clipboard data-clipboard-text={shortcuts.bash}>{shortcuts.bash}</Clipboard></p>
+      </div>)
     }
 
     return [

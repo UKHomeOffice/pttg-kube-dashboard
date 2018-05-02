@@ -20,7 +20,7 @@ export default class DeploymentsTable extends React.Component {
 
 
   handleScale (dep) {
-    fetch(`/api/context/${this.props.context}/namespace/${this.props.namespace}/deployments/${dep.metadata.name}`, {
+    fetch(`/api/context/${this.props.context}/namespace/${this.props.namespace}/deployments/${dep.metadata.name}/scale`, {
       body: JSON.stringify({scale: this.state.scales[dep.metadata.name]}),
       method: 'POST',
       headers: {
@@ -30,6 +30,24 @@ export default class DeploymentsTable extends React.Component {
       (result) => {
         let par = this.props.parent
         par.refresh(par.state.url)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  }
+
+  handleDeployment (dep, nextNs) {
+    // console.log('handleDeployment', dep.metadata.name, nextNs, dep.v)
+    fetch(`/api/context/${this.props.context}/namespace/${this.props.namespace}/deployments/${dep.metadata.name}/deploy`, {
+      body: JSON.stringify({version: dep.v, env: nextNs, build: dep.metadata.labels.version}),
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      }
+    }).then(
+      (result) => {
+        console.log('DEPLOYING', result)
       },
       (error) => {
         console.log(error)
@@ -53,11 +71,35 @@ export default class DeploymentsTable extends React.Component {
     }
     
 
+    let nextNs = ''
+    if (_.last(this.props.namespace.split('-')) === 'dev') {
+      nextNs = 'test'
+    } else if (_.last(this.props.namespace.split('-')) === 'test') {
+      nextNs = 'pr'
+    }
+    if (nextNs) {
+
+      data.items.map(dep => {
+        if (!dep.metadata.labels.version) {
+          return dep
+        }
+
+        let v = Number(_.last(dep.metadata.labels.version.split('-')))
+        if (!v) {
+          return dep
+        }
+
+        dep.v = v
+        dep.promotion = <a className="button" onClick={() => this.handleDeployment(dep, nextNs)}>Promote {v} to {nextNs} -></a>
+      })
+    }
+
     return (
       <table className="table table--deployments">
         <thead>
           <tr>
             <th>Name</th>
+            <th>Build</th>
             <th>Replicas</th>
             <th>Available</th>
             <th>Unavailable</th>
@@ -71,6 +113,7 @@ export default class DeploymentsTable extends React.Component {
           {data.items.map(dep => (
             <tr key={dep.metadata.name}>
               <td>{dep.metadata.name}</td>
+              <td>{dep.metadata.labels.version}</td>
               <td>{dep.status.replicas}</td>
               <td>{dep.status.availableReplicas}</td>
               <td>{dep.status.unavailableReplicas}</td>
@@ -82,6 +125,7 @@ export default class DeploymentsTable extends React.Component {
               </td>
               <td>
                 <OverlayButton label="JSON" data={dep} />
+                {dep.promotion}
               </td>
             </tr>
           ))}

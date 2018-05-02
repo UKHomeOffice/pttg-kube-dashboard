@@ -10,7 +10,7 @@ export default class Expandable extends React.Component {
       title: this.props.title || utils.capitalizeFirstLetter(this.props.id) || 'Expandable',
       ns: this.props.namespace,
       cxt: this.props.context,
-      show: cookie.load('show' + this.props.id) === 'true'
+      show: (this.props.id) ? cookie.load('show' + this.props.id) === 'true': false
     }
   }
 
@@ -18,15 +18,12 @@ export default class Expandable extends React.Component {
     this.setState({
       show: !this.state.show
     })
-
-    console.log('handleClick')
-    // this.props.parent.expandableAction(this.props.id)
   }
 
   render () {
-
-    cookie.save('show' + this.props.id, this.state.show)
-
+    if (this.props.id) {
+      cookie.save('show' + this.props.id, this.state.show)
+    }
     let toggle = (
       <h2 className="expandable__header"><a onClick={() => this.handleClick()} className={this.state.show ? 'icon icon-down-open': 'icon icon-right-open'}>{this.state.title}</a></h2>
     )

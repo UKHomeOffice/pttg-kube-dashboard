@@ -54,7 +54,7 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
-    "start": "node server.js & node scripts/start.js",
+    "start": "nodemon server.js & node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "react": "node scripts/start.js"
@@ -64,6 +64,7 @@
     "body-parser": "^1.18.2",
     "clipboard": "^2.0.0",
     "fs-extra": "^3.0.1",
+    "md5": "^2.2.1",
     "moment": "^2.22.1",
     "momentjs": "^2.0.0",
     "node-sass": "^4.8.3",
