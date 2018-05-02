@@ -35,6 +35,18 @@ exports = module.exports = {
 
 `npm start`
 
+## Drone integration ##
+
+Add details of your drone server and token to the `config.js` file, if you want to enable deployment between environments.
+
+Currently the assumed deployment process is `namespace_dev` to `namespace_test` to `namespace_pr`.
+
+```
+  drone: {
+    server: 'https://drone.acp.homeoffice.gov.uk',
+    token: 'yourDRONEtokenGoesHere'
+  },
+```
 
 ## Helm integration ##
 
