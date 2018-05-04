@@ -24,6 +24,13 @@
   display: none;
 }
 
+.container--brief {
+  padding-right: 10px;
+  .info {
+    display: inline;
+  }
+}
+
 
 .container__image {
   display: block;

@@ -14,6 +14,12 @@ app.get('/config', (req, res) => {
   res.send(config)
 })
 
+const randPass = () => {
+  var pwdChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+  var pwdLen = 20
+  return Array(pwdLen).fill(pwdChars).map(x => x[Math.floor(Math.random() * x.length)]).join('')
+}
+
 helm.init()
 
 const execCmd = (cmd) => {
@@ -224,6 +230,38 @@ app.get('/api/context/:con/namespace/:ns/pods/:id/log/:container', (req, res) =>
 //     res.send({error: error})
 //   })
 // })
+
+app.get('/api/htpasswd', (req, res) => {
+  let users = req.query.users.split(',')
+  let output = ''
+  let data = ''
+  let nxt = () => {
+    let u = users.shift()
+    let p = randPass()// 'password1'
+    let up = `${u}:${p}`
+    console.log(up)
+    let up64 = Buffer.from(up).toString('base64')
+    data += `  ${u}: '${up64}'\n`
+    execCmd(`htpasswd -bn ${u} ${p}`).then(result => {
+      console.log(result.raw)
+      output += result.raw.trim() + '\n'
+      if (users.length) {
+        nxt()
+      } else {
+        let b64 = Buffer.from(output).toString('base64')
+        res.send(`<pre>apiVersion: v1
+kind: Secret
+metadata:
+  name: pttg-audit-service-secrets
+data:
+  .htpasswd_1: '${b64}'
+${data}
+</pre>`)
+      }
+    })
+  }
+  nxt()
+})
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'))

@@ -1,7 +1,7 @@
 @import '../variables';
 
 .loader {
-
+  position: relative;
 }
 
 .loader--loading {
@@ -14,13 +14,23 @@
 
 .loader__controls {
   position: absolute;
-  top: 11px;
-  right: 0;
-  border-radius: 4px 4px 0 0;
+  top: 2px;
+  right: 2px;
+  border-radius: 4px;
   font-size: 12px;
-  background-color: #eee;
+  background-color: #fff;
   overflow: hidden;
   height: 22px;
+  width: 140px;
+}
+
+.expandable__content {
+  .loader__controls {
+    top: -22px;
+    right: 0;
+    border-radius: 4px 4px 0 0;
+    background-color: #eee;
+  }
 }
 
 .loader__refresh {
@@ -48,9 +58,15 @@
 .loader__kccmd {
   background-color: #eee;
   display: block;
-  padding: 2px 10px;
+  padding: 2px 150px 2px 10px;
   text-align: right;
   button {
     font-family: $fontMono;
+  }
+}
+
+.expandable__content {
+  .loader__kccmd {
+    padding-right: 10px;
   }
 }

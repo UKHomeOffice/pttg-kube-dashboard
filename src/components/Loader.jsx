@@ -9,7 +9,7 @@ export default class Loader extends React.Component {
       data: null,
       url: this.props.url,
       previousUrl: '',
-      autoRefresh: Math.round(Number(this.props.autoRefresh)) || 10,
+      autoRefresh: Math.round(Number(this.props.autoRefresh)) || 5,
       countDown: 0,
       timer: null,
       auto: false
