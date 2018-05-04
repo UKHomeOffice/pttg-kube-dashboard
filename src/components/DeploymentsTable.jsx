@@ -19,22 +19,23 @@ export default class DeploymentsTable extends React.Component {
   }
 
 
-  handleScale (dep) {
+  handleScale (dep, e) {
+    console.log(e)
     fetch(`/api/context/${this.props.context}/namespace/${this.props.namespace}/deployments/${dep.metadata.name}/scale`, {
       body: JSON.stringify({scale: this.state.scales[dep.metadata.name]}),
       method: 'POST',
       headers: {
         'content-type': 'application/json'
       }
-    }).then(
-      (result) => {
-        let par = this.props.parent
-        par.refresh(par.state.url)
-      },
-      (error) => {
-        console.log(error)
+    }).then(result => {
+      console.log(result)
+      if (!result.ok) {
+        alert(`FAILED: Scale ${dep.metadata.name}  - check permissions/excalate privileges!`)
       }
-    )
+
+      let par = this.props.parent
+      par.refresh(par.state.url)
+    })
   }
 
   handleDeployment (dep, nextNs) {
@@ -121,7 +122,7 @@ export default class DeploymentsTable extends React.Component {
               <td>{dep.status.updatedReplicas}</td>
               <td>
                 <input className="deployment__scaleinput" type="number" value={this.state.scales[dep.metadata.name]} onChange={(e) => this.handleChange(e, dep)} />
-                <a className="button" onClick={(e) => this.handleScale(dep)}>SCALE</a>
+                <a className="button" onClick={(e) => this.handleScale(dep, e)}>SCALE</a>
               </td>
               <td>
                 <OverlayButton label="JSON" data={dep} />

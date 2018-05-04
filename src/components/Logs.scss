@@ -21,3 +21,16 @@
 .logs__time {
   width: 150px;
 }
+
+
+  .logs__line--info {
+    color: $green;
+  }
+
+  .logs__line--debug {
+    color: #666;
+  }
+
+  .logs__line--error {
+    color: #f00;
+  }

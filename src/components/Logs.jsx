@@ -28,29 +28,54 @@ export default class Logs extends React.Component {
       return moment(l['@timestamp'])
     }
 
+    if (l.timestamp) {
+      return moment(l['timestamp'])
+    }
+
     return null
   }
 
   getLine (l) {
-    if (_.isString(l)) {
+    let mom = this.getMoment(l)
+    let timestr = mom ? mom.format('DD/MM/YYYY HH:mm:ss') : ''
+    let level = (l.level) ? l.level.toLowerCase() : ''
+    if (!level && l.msg && l.msg.includes('[error]')) {
+      level = 'error'
+    }
+    if (!level) {
+      level = 'normal'
+    }
+
+
+    if (l.msg && _.keys(l).length === 1) {
       return {
-        time: null,
-        timestr: '',
-        msg: l,
-        json: null,
-        className: 'logs__line'
+        time: mom,
+        timestr,
+        msg: l.msg,
+        className: 'logs__line logs__line--' + level
       }
     }
 
-    let mom = this.getMoment(l)
-    let timestr = mom ? mom.format('DD/MM/YYYY HH:mm:ss') : ''
-    return {
+    let entry = {
       time: mom,
       timestr,
-      msg: l.message || l.msg,
+      msg: l.msg,
       json: l,
-      className: 'logs__line ' + ((l.level) ? 'logs__line--' + l.level.toLowerCase() : '')
+      className: 'logs__line logs__line--' + level
     }
+
+    entry.msg = l.msg || l.message || ''
+    if (!entry.msg) {
+      if (l.request_uri && l.http_status && l.request_method) {
+        entry.msg = `${l.http_status} ${l.request_method} ${l.request_uri}`
+      }
+    }
+
+    if(entry.msg === 'client request' && l.method && l.status && l.path) {
+      entry.msg = `${l.status} ${l.method} ${l.path}`
+    }
+ 
+    return entry
   }
 
   render() {

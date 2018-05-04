@@ -55,6 +55,7 @@
   },
   "scripts": {
     "start": "node server.js & node scripts/start.js",
+    "dev": "nodemon server.js & node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "react": "node scripts/start.js"
@@ -68,6 +69,7 @@
     "moment": "^2.22.1",
     "momentjs": "^2.0.0",
     "node-sass": "^4.8.3",
+    "nodemon": "^1.17.3",
     "react-clipboard.js": "^1.1.3",
     "react-cookies": "^0.1.0",
     "sass-loader": "^6.0.7",

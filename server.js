@@ -20,6 +20,20 @@ const randPass = () => {
   return Array(pwdLen).fill(pwdChars).map(x => x[Math.floor(Math.random() * x.length)]).join('')
 }
 
+const logLineParse = (l) => {
+  let lineJson = null
+  try {
+    lineJson = JSON.parse(l)
+    return lineJson
+  } catch (e) {
+    lineJson = null
+  }
+
+  if (!l.length) return null
+
+  return {msg: l}
+}
+
 helm.init()
 
 const execCmd = (cmd) => {
@@ -28,6 +42,8 @@ const execCmd = (cmd) => {
     exec(cmd, {maxBuffer: 1024 * 2048}, (error, stdout, stderr) => {
       if (error) {
         console.log('ERROR', error)
+        error.stdout = stdout
+        error.stderr = stderr
         return reject(error)
       }
       try {
@@ -35,7 +51,7 @@ const execCmd = (cmd) => {
         return resolve(json)
       } catch (e) {
         // console.log('CAUGHT', e)
-        return resolve({ raw: stdout })
+        return resolve({ raw: stdout, error: e })
       }
     })
   })
@@ -93,11 +109,8 @@ app.post('/api/context/:con/namespace/:ns/deployments/:dep/deploy', (req, res) =
   let version = req.body.version
   let env = req.body.env
 
-  console.log(build, project, version, env)
-
   if (build && env) {
     const cmd = `drone -s ${config.drone.server} -t ${config.drone.token} deploy -p IMAGE_VERSION=${build} UKHomeOffice/${project} ${version} ${env}`
-    console.log('cmd', cmd)
     stdCmdAndResponse(res, cmd, (result) => {
       return result
     })
@@ -108,7 +121,6 @@ app.post('/api/context/:con/namespace/:ns/deployments/:dep/deploy', (req, res) =
 })
 
 app.post('/api/context/:con/namespace/:ns/deployments/:dep/scale', (req, res) => {
-  console.log(req.body)
   let rep = Number(req.body.scale)
   if (rep >= 0) {
     const cmd = `kubectl --context=${req.params.con} -n=${req.params.ns} scale deployment ${req.params.dep} --replicas=${rep}`
@@ -192,44 +204,28 @@ app.get('/api/context/:con/namespace/:ns/pods/:id/log/:container', (req, res) =>
     var lines = result.raw.split('\n')
     var lineJson
     _.each(lines, (l) => {
-      try {
-        lineJson = JSON.parse(l)
-        data.push(lineJson)
-      } catch (e) {
-        if (l.length) {
-          data.push(l)
-          // let prevMsg = _.last(data)
-          // if (prevMsg && prevMsg.msg) {
-          //   prevMsg.msg.push(l)
-          // } else {
-          //   data.push({msg: [l]})
-          // }
-        }
+      let entry = logLineParse(l)
+      if (entry) {
+        data.push(entry)
       }
+      // try {
+      //   lineJson = JSON.parse(l)
+      //   data.push(lineJson)
+      // } catch (e) {
+      //   if (l.length) {
+      //     data.push(l)
+      //     // let prevMsg = _.last(data)
+      //     // if (prevMsg && prevMsg.msg) {
+      //     //   prevMsg.msg.push(l)
+      //     // } else {
+      //     //   data.push({msg: [l]})
+      //     // }
+      //   }
+      // }
     })
     return {lines: data, __cmd: cmd}
   })
 })
-
-// app.get('/api/namespace/:namespace/pod/:pid/container/:container/log', (req, res) => {
-//   res.setHeader('Content-Type', 'application/json')
-//   KubeService.getLog(req.params.namespace, req.params.pid, req.params.container).then((result) => {
-//     res.send(result)
-//   }, function (error) {
-//     res.statusCode = 500
-//     res.send({error: error})
-//   })
-// })
-
-// app.get('/api/namespace/:namespace/pod/:pid/container/:container/health', (req, res) => {
-//   res.setHeader('Content-Type', 'application/json')
-//   KubeService.getHealth(req.params.namespace, req.params.pid, req.params.container).then((result) => {
-//     res.send(result)
-//   }, function (error) {
-//     res.statusCode = 500
-//     res.send({error: error})
-//   })
-// })
 
 app.get('/api/htpasswd', (req, res) => {
   let users = req.query.users.split(',')
