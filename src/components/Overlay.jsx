@@ -47,13 +47,14 @@ export default class Overlay extends React.Component {
     if (this.state.html) {
       content = this.state.html
     } else if (!this.state.render) {
-      let jsonCopy = JSON.parse(JSON.stringify(this.state.json))
-      _.each(jsonCopy.lines, (v, k) => {
-        if (v.stack_trace) {
-          v.stack_trace = v.stack_trace.split('\n').map(l => l.replace('\t', '  '))
-        }
-      })
-      let datastr = JSON.stringify(jsonCopy, null, '  ')
+      // let jsonCopy = JSON.parse(JSON.stringify(this.state.json))
+      // _.each(jsonCopy.lines, (v, k) => {
+      //   if (v.stack_trace) {
+      //     v.stack_trace = v.stack_trace.split('\n').map(l => l.replace('\t', '  '))
+      //   }
+      // })
+      console.log(this.state.json)
+      let datastr = JSON.stringify(this.state.json, null, '  ')
       content = (
         <div className="json">
           <div className="json__detail">

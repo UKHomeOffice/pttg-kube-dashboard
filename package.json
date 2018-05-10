@@ -4,6 +4,7 @@
   "private": true,
   "nodemonConfig": {
     "watch": [
+      "config.js",
       "server.js",
       "helm.js"
     ],

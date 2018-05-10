@@ -50,9 +50,13 @@ export default class Contexts extends React.Component {
   render () {
     const { contexts } = this.state
 
+    if (!_.isArray(contexts)) {
+      return <NavLink to='/project' className="modeswitch">Projects</NavLink>
+    }
 
     return (
       <div>
+        <NavLink to='/project' className="modeswitch">Projects</NavLink>
         <ul className='context__nav'>
           {contexts.map(c => (
             <li key={c.name} className="context__navli">

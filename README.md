@@ -10,6 +10,11 @@
 
 `npm install`
 
+
+### by Context ###
+
+Your namespaces and contexts can be defined by context, by project or both. By context is a simple set of context - namespace definitions.
+
 Add details of contexts and namespaces to `config.js`, these details must match your contexts as named in your `~/.kube/config` file, you must have the appropriate kube tokens available on your system.
 
 ```
@@ -33,7 +38,69 @@ exports = module.exports = {
 }
 ```
 
+
+### by Project ###
+
+You can also define your contexts and namespaces as project specific environments, such that you can specify a project and then the order in which your deploy pipeline works.
+
+```
+  projects: [
+    {
+      name: 'My project name',
+      ref: 'proj',
+      environments: [
+        {
+          context: 'not_prod_context',
+          namespace: 'namespace-dev',
+          name: 'dev'
+        },
+        {
+          context: 'not_prod_context',
+          namespace: 'namespace-test',
+          name: 'test'
+        },
+        {
+          context: 'prod_context',
+          namespace: 'namespace-prof',
+          name: 'prod'
+        }
+      ]
+    }
+  ]
+```
+
+
+#### Colour coding ####
+
+To better highlight which environment you're working with each environment is colour-coded keyed from the environment name.
+
+By default `dev` is `lime`, `test` is `yellow` and `prod` is `pink`
+
+There are 7 colours available, they are...
+
+- lime
+- cyan
+- purple
+- yellow
+- orange
+- pink
+- red
+
+You can map environment labels to colours by adding a config section called `environmentColours` for example to change the default for test to `cyan` and `prod` to `red`
+
+```
+  environmentColours: {
+    dev: 'lime',
+    test: 'cyan',
+    prod: 'red'
+  }
+```
+
+
+## Start ##
+
 `npm start`
+
 
 ## Drone integration ##
 
@@ -47,6 +114,7 @@ Currently the assumed deployment process is `namespace_dev` to `namespace_test` 
     token: 'yourDRONEtokenGoesHere'
   },
 ```
+
 
 ## Helm integration ##
 
@@ -63,6 +131,7 @@ exports = module.exports = {
     {
       name: 'context1',
 ```
+
 
 ### Step 3: Repo url and project details ###
 

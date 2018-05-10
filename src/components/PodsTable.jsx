@@ -168,13 +168,14 @@ export default class PodsTable extends React.Component {
   }
 
   render() {
+    console.log(this.props.context)
     let detail = this.state.showDetail
     let data = this.state.data || this.props.data
     if (!data || !_.isArray(data.items)) {
       return ''
     }
       
-    let helm = HelmService.getData(this.props.context)
+    let helm = HelmService.getData(this.props.context) || []
 
     // EACH POD
     let podDetails = data.items.map(p =>{

@@ -57,7 +57,7 @@ a {
 }
 
 a:hover {
-  color: #f00 !important;
+  color: #f00;
 }
 
 .title--collapsed {
@@ -174,4 +174,10 @@ pre {
   position: absolute;
   top: 6px;
   right: 0;
+}
+
+.modeswitch {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }

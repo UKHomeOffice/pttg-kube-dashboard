@@ -9,6 +9,8 @@ export default class IngressTable extends React.Component {
       return ''
     }
 
+    console.log(data)
+
     return(
       <table>
         <tbody>

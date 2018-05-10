@@ -1,0 +1,99 @@
+@import '../../variables';
+
+// $lime: #a6e22e;
+// $cyan: #66d9ef;
+// $purple: #ae81ff;
+// $yellow: #f9ec70;
+// $orange: #fd9720;
+// $pink: #f92672;
+
+$envColours: (
+  lime: $lime,
+  yellow: $yellow,
+  pink: $pink,
+  cyan: $cyan,
+  purple: $purple,
+  orange: $orange,
+  red: $red,
+  default: #ccc
+);
+
+
+
+.project__nav {
+  color: #fff;
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.project__list {
+  background-color: $darkGrey;
+}
+
+.project__navli {
+  display: inline;
+}
+
+.project__navlink {
+  display: inline-block;
+  padding: 4px 10px;
+  color: #ccc;
+}
+
+
+.project__envlist {
+  background-color: #000;
+  border-width: 0 0 10px 0;
+  border-color: #000;
+  border-style: solid;
+}
+
+
+.project__navlink--active {
+  background-color: #000;
+  color: #fff;
+}
+
+.project__resourcelist {
+  border-width: 0 0 0 10px;
+  border-style: solid;
+  border-color: #fff;
+  padding-right: 10px;
+}
+
+.project__navlink--resource {
+  color: #666;
+}
+
+
+.project__detail {
+  border-width: 0 0 0 10px;
+  border-style: solid;
+  border-color: #fff;
+  padding-right: 10px;
+}
+
+@each $key, $value in $envColours {
+
+  .project__envlist--#{$key} {
+    border-color: $value;
+  }
+
+  .project__navlink--active {
+    &.project__navlink--#{$key} {
+      color: #000;
+      background-color: $value;
+    }
+  }
+
+  .project__resourcelist--#{$key} {
+    border-color: $value;
+  }
+
+  .project__detail--#{$key} {
+    border-color: $value;
+  }
+}

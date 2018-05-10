@@ -15,8 +15,6 @@ export default class Logs extends React.Component {
     this.state = {
       data: this.props.data
     }
-
-    console.log(this.props.data)
   }
 
   getMoment(l) {

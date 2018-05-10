@@ -57,6 +57,7 @@ export default class DeploymentsTable extends React.Component {
   }
 
   render() {
+    let promotions = {}
     let data = this.props.data
     if (!data || !_.isArray(data.items)) {
       return ''
@@ -91,7 +92,7 @@ export default class DeploymentsTable extends React.Component {
         }
 
         dep.v = v
-        dep.promotion = <a className="button" onClick={() => this.handleDeployment(dep, nextNs)}>Promote {v} to {nextNs} -></a>
+        promotions[dep.metadata.name] = <a className="button" onClick={() => this.handleDeployment(dep, nextNs)}>Promote {v} to {nextNs} -></a>
       })
     }
 
@@ -126,7 +127,7 @@ export default class DeploymentsTable extends React.Component {
               </td>
               <td>
                 <OverlayButton label="JSON" data={dep} />
-                {dep.promotion}
+                {promotions[dep.metadata.name]}
               </td>
             </tr>
           ))}

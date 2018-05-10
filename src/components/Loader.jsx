@@ -21,6 +21,12 @@ export default class Loader extends React.Component {
   }
 
   componentWillReceiveProps(nextProps, nextState) {
+    if (this.props.url !== nextProps.url) {
+      this.setState({
+        data: null,
+        url: nextProps.url
+      })
+    }
     this.refresh(nextProps.url)
   }
 
@@ -40,7 +46,7 @@ export default class Loader extends React.Component {
       .then(res => res.json())
       .then(
         (result) => {
-          if (!result.error) {
+          if (!result.error && this.state.url === url) {
             this.setState({
               isLoaded: true,
               isLoading: false,
