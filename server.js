@@ -198,7 +198,7 @@ app.get('/api/context/:con/namespace/:ns/pods/:id/describe', (req, res) => {
 })
 
 app.get('/api/context/:con/namespace/:ns/pods/:id/log/:container', (req, res) => {
-  const cmd = `kubectl --context=${req.params.con} logs ${req.params.id} -n ${req.params.ns} -c ${req.params.container}`
+  const cmd = `kubectl --context=${req.params.con} logs ${req.params.id} -n ${req.params.ns} -c ${req.params.container} --limit-bytes=` + 1024 * 2048
   stdCmdAndResponse(res, cmd, (result) => {
     var data = []
     var lines = result.raw.split('\n')
