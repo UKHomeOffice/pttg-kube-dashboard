@@ -9,7 +9,8 @@ export default class Overlay extends React.Component {
     this.state = {
       show: false,
       json: null,
-      scroll: 0
+      scroll: 0,
+      title: ''
     }
   }
 
@@ -17,6 +18,7 @@ export default class Overlay extends React.Component {
   // a handler in the constructor.
   handleNvEnter = (event) => {
     this.setState({
+      title: event.detail.title || '',
       show: true,
       json: event.detail.json,
       html: event.detail.html,
@@ -53,7 +55,7 @@ export default class Overlay extends React.Component {
       //     v.stack_trace = v.stack_trace.split('\n').map(l => l.replace('\t', '  '))
       //   }
       // })
-      console.log(this.state.json)
+      
       let datastr = JSON.stringify(this.state.json, null, '  ')
       content = (
         <div className="json">
@@ -132,6 +134,7 @@ export default class Overlay extends React.Component {
     }
 
     return (<div className="overlay">
+      <h1 className="overlay__title">{this.state.title}</h1>
       <a className="button button--close" onClick={() => this.setState({show: false})}>X</a>
       <div className="overlay__content">
         {content}

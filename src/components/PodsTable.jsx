@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'underscore'
+import moment from 'moment'
 import EventsTable from './EventsTable'
 import OverlayButton from './OverlayButton'
 import HelmService from './HelmService'
@@ -33,9 +34,17 @@ export default class PodsTable extends React.Component {
 
   handleClickLog (p, c) {
     let u = `/api/context/${this.props.context}/namespace/${this.props.namespace}/pods/${p.name}/log/${c.name}`
-    let html = (<Loader url={u}><Logs /></Loader>)
+    let title = 
+    <span className="loader__title">
+      <span>Container</span> {c.name}
+      <span>Pod</span> {p.name} 
+      <span>Namespace</span> {this.props.namespace}
+      <span>Context</span> {this.props.context}
+    </span>
+
+    let html = (<Loader url={u} options={['since']}><Logs /></Loader>)
     
-    var logsEvent = new CustomEvent('overlay_show', { detail: { html }})
+    var logsEvent = new CustomEvent('overlay_show', { detail: { html, title}})
     document.dispatchEvent(logsEvent);
   }
 
@@ -98,13 +107,13 @@ export default class PodsTable extends React.Component {
       )
     }
 
-
     return (
-      <tbody>
+      <tbody key={p.name}>
         <tr className="pod__summary">
           <td>{p.name}</td>
           <td>{p.readyContainers}/{p.totalContainers}</td>
           <td>{p.containers.map(c => c.html)}</td>
+          <td>{moment(p.raw.status.startTime).fromNow()}</td>
           <td><OverlayButton label="JSON" data={p.raw} /></td>
         </tr>
       </tbody>
@@ -129,7 +138,7 @@ export default class PodsTable extends React.Component {
 
     if (detail) {
       return [
-        <td key={c.name}>
+        <td key={p.name + c.name}>
           <div className={c.classes}>
             <span className="container__links">
               <a className="container__link container__link--port" onClick={(e) => this.handleClickPort(p, c)} title="kubectl commands for port forwarding, sh and bash">{c.port}</a>
@@ -293,6 +302,7 @@ export default class PodsTable extends React.Component {
             <th><a className="icon icon-right-open" onClick={() => this.setState({ showDetail: true })}>Pod</a></th>
             <th></th>
             <th>Containers</th>
+            <th>Started</th>
             <th></th>
           </tr>
         </thead>

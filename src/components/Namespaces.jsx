@@ -1,8 +1,6 @@
 import React from 'react'
 import { NavLink, Route } from 'react-router-dom'
 import Namespace from './Namespace'
-import Loader from './Loader'
-import Helm from './Helm'
 import HelmService from './HelmService'
 
 import './Namespaces.scss'
@@ -10,7 +8,7 @@ import './Namespaces.scss'
 export default class Namespaces extends React.Component {
   constructor (props) {
     super(props)
-    console.log('props', this.props)
+    
     this.state = {
       cxt: null,
       helm: null
@@ -26,7 +24,7 @@ export default class Namespaces extends React.Component {
     .then(res => res.json())
     .then(
       (result) => {
-        console.log('Helm', result)
+        
         if (!result.error) {
           this.setState({
             cxt: cxt,
@@ -36,7 +34,7 @@ export default class Namespaces extends React.Component {
         }
       },
       (error) => {
-        console.log('Helm error')
+        
         this.setState({
           cxt: cxt,
           helm: {}

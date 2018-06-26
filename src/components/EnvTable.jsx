@@ -1,12 +1,11 @@
 import React from 'react'
 import _ from 'underscore'
-import OverlayButton from './OverlayButton'
 
 export default class EnvTable extends React.Component {
 
   render() {
     let data = this.props.data.env
-    console.log(data)
+    
     let summary = []
     _.each(data, (d) => {
       let entry = {

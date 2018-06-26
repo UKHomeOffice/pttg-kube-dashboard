@@ -58,6 +58,7 @@ export default class DeploymentsTable extends React.Component {
 
   render() {
     let promotions = {}
+    let redeployments = {}
     let data = this.props.data
     if (!data || !_.isArray(data.items)) {
       return ''
@@ -74,14 +75,14 @@ export default class DeploymentsTable extends React.Component {
     
 
     let nextNs = ''
-    if (_.last(this.props.namespace.split('-')) === 'dev') {
+    let currentEnv = _.last(this.props.namespace.split('-'))
+    if (currentEnv === 'dev') {
       nextNs = 'test'
-    } else if (_.last(this.props.namespace.split('-')) === 'test') {
+    } else if (currentEnv === 'test') {
       nextNs = 'pr'
     }
     if (nextNs) {
-
-      data.items.map(dep => {
+      _.each(data.items, dep => {
         if (!dep.metadata.labels.version) {
           return dep
         }
@@ -95,6 +96,13 @@ export default class DeploymentsTable extends React.Component {
         promotions[dep.metadata.name] = <a className="button" onClick={() => this.handleDeployment(dep, nextNs)}>Promote {v} to {nextNs} -></a>
       })
     }
+
+    data.items.map(dep => {
+      if (!dep.metadata.labels.version) return
+      let v = Number(_.last(dep.metadata.labels.version.split('-')))
+      if (!v) return
+      redeployments[dep.metadata.name] = <a className="button" onClick={() => this.handleDeployment(dep, currentEnv)}>Redploy {v} to {currentEnv}</a>
+    })
 
     return (
       <table className="table table--deployments">
@@ -127,6 +135,7 @@ export default class DeploymentsTable extends React.Component {
               </td>
               <td>
                 <OverlayButton label="JSON" data={dep} />
+                {redeployments[dep.metadata.name]}
                 {promotions[dep.metadata.name]}
               </td>
             </tr>

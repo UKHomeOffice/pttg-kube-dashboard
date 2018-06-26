@@ -22,8 +22,8 @@ export default class Project extends React.Component {
         <table>
           <tbody>
           {this.state.env.map(e => (
-            <tr key={e.cluster + e.namespace}>
-              <td>{e.cluster}</td>
+            <tr key={e.context + e.namespace}>
+              <td>{e.context}</td>
               <td>{e.namespace}</td>
               <td>{e.label}</td>
             </tr>

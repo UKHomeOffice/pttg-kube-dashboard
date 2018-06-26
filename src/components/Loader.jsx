@@ -1,13 +1,16 @@
 import React from 'react'
 import './Loader.scss'
+import _ from 'underscore'
 import Clipboard from 'react-clipboard.js'
 
 export default class Loader extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      options: this.props.options || [],
       data: null,
       url: this.props.url,
+      query: {},
       previousUrl: '',
       autoRefresh: Math.round(Number(this.props.autoRefresh)) || 5,
       countDown: 0,
@@ -17,10 +20,16 @@ export default class Loader extends React.Component {
   }
 
   componentDidMount() {
-    this.refresh(this.props.url)
+    console.log('componentDidMount', this.props.url)
+    let qs = {}
+    if (this.state.options.includes('since')) {
+      qs.since = 'today'
+    }
+    this.refresh(this.props.url, qs)
   }
 
   componentWillReceiveProps(nextProps, nextState) {
+    console.log('componentWillReceiveProps', nextProps, nextState)
     if (this.props.url !== nextProps.url) {
       this.setState({
         data: null,
@@ -34,7 +43,20 @@ export default class Loader extends React.Component {
     clearTimeout(this.state.timer)
   }
 
-  refresh(url) {
+  getUrl(url, qs) {
+    if (!qs) {
+      return url
+    }
+
+    let params = []
+    _.each(qs, (val, key) => {
+      params.push(key + '=' + val)
+    })
+
+    return url + '?' + params.join('&')
+  }
+
+  refresh(url, qs) {
     clearTimeout(this.state.timer)
     this.setState({
       isLoading: true,
@@ -42,7 +64,7 @@ export default class Loader extends React.Component {
       url: url,
       countDown: this.state.autoRefresh
     })
-    fetch(url)
+    fetch(this.getUrl(url, qs))
       .then(res => res.json())
       .then(
         (result) => {
@@ -51,10 +73,11 @@ export default class Loader extends React.Component {
               isLoaded: true,
               isLoading: false,
               data: result,
-              url: url
+              url: url,
+              query: qs
             })
 
-            this.checkAgain(url)
+            this.checkAgain(url, qs)
           }
         },
         (error) => {
@@ -68,18 +91,24 @@ export default class Loader extends React.Component {
       )
   }
 
-  checkAgain (url) {
+  handleQueryChange(e) {
+    let qs = JSON.parse(JSON.stringify(this.state.query))
+    qs.since = e.target.value
+    this.refresh(this.state.url, qs)
+  }
+
+  checkAgain (url, qs) {
     if (!this.state.auto) {
       return
     }
 
     if (!this.state.countDown) {
-      this.refresh(url)
+      this.refresh(url, qs)
     } else {
       let countDown = this.state.countDown -1
       this.setState({
         countDown,
-        timer: setTimeout(() => this.checkAgain(url),  1000)
+        timer: setTimeout(() => this.checkAgain(url, qs),  1000)
       })
     }
   }
@@ -94,7 +123,7 @@ export default class Loader extends React.Component {
       this.setState({
         auto: true
       })
-      this.refresh(this.state.url)
+      this.refresh(this.state.url, this.state.query)
     }
   }
 
@@ -104,8 +133,9 @@ export default class Loader extends React.Component {
     let data = this.state.data
     let cmd = ''
     let childrenWithData = React.Children.map(children, child => React.cloneElement(child, {data: data, parent: this}))
-    let loadStatus = <a onClick={() => this.refresh(this.state.url)} className="loader__refresh icon icon-spin2">Refresh</a>
+    let loadStatus = <a onClick={() => this.refresh(this.state.url, this.state.query)} className="loader__refresh icon icon-spin2">Refresh</a>
     let classes = ['loader']
+    let options = ''
     if (this.state.isLoading) {
       classes.push('loader--loading')
       loadStatus = <a className="loader__refresh  icon icon-spin2 animate-spin">Loading</a>
@@ -118,8 +148,25 @@ export default class Loader extends React.Component {
     if (data && data.__cmd) {
       cmd = (<span className="loader__kccmd"><Clipboard data-clipboard-text={data.__cmd}>{data.__cmd}</Clipboard></span>)
     }
+    
+    if (_.has(this.state.query, 'since')) {
+      options = (
+        <div className="loader__options">
+          <select name="since" value={this.state.query.since} onChange={e => this.handleQueryChange(e)}>
+            <option value="today">Today</option>
+            <option value="1h">1h</option>
+            <option value="2h">2h</option>
+            <option value="4h">4h</option>
+            <option value="All">all</option>
+          </select>
+        </div>
+      )
+    }
+  
+
     return (
       <div className={classes.join(' ')}>
+        {options}
         <div className="loader__controls">{loadStatus} <span className="loader__countdown">{counter}</span> {auto}</div>
         {cmd}
         {childrenWithData}

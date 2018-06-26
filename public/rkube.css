@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'rkube';
-  src: url('./font/rkube.eot?66734633');
-  src: url('./font/rkube.eot?66734633#iefix') format('embedded-opentype'),
-       url('./font/rkube.woff2?66734633') format('woff2'),
-       url('./font/rkube.woff?66734633') format('woff'),
-       url('./font/rkube.ttf?66734633') format('truetype'),
-       url('./font/rkube.svg?66734633#rkube') format('svg');
+  src: url('../font/rkube.eot?3049607');
+  src: url('../font/rkube.eot?3049607#iefix') format('embedded-opentype'),
+       url('../font/rkube.woff2?3049607') format('woff2'),
+       url('../font/rkube.woff?3049607') format('woff'),
+       url('../font/rkube.ttf?3049607') format('truetype'),
+       url('../font/rkube.svg?3049607#rkube') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'rkube';
-    src: url('./font/rkube.svg?66734633#rkube') format('svg');
+    src: url('../font/rkube.svg?3049607#rkube') format('svg');
   }
 }
 */
@@ -70,96 +70,12 @@
 .icon-up-open:before { content: '\e80c'; } /* '' */
 .icon-eye:before { content: '\e80d'; } /* '' */
 .icon-login:before { content: '\e80e'; } /* '' */
+.icon-plus-circled:before { content: '\e80f'; } /* '' */
+.icon-minus-circled:before { content: '\e810'; } /* '' */
+.icon-pencil:before { content: '\e811'; } /* '' */
+.icon-retweet:before { content: '\e812'; } /* '' */
 .icon-spin2:before { content: '\e831'; } /* '' */
 .icon-link-ext:before { content: '\f08e'; } /* '' */
 .icon-docs:before { content: '\f0c5'; } /* '' */
 .icon-doc-text:before { content: '\f0f6'; } /* '' */
 .icon-attention-alt:before { content: '\f12a'; } /* '' */
-
-
-
-/*
-   Animation example, for spinners
-*/
-.animate-spin:before {
-  -moz-animation: spin 1s infinite linear;
-  -o-animation: spin 1s infinite linear;
-  -webkit-animation: spin 1s infinite linear;
-  animation: spin 1s infinite linear;
-  display: inline-block;
-}
-@-moz-keyframes spin {
-  0% {
-    -moz-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
-  100% {
-    -moz-transform: rotate(359deg);
-    -o-transform: rotate(359deg);
-    -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
-@-webkit-keyframes spin {
-  0% {
-    -moz-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
-  100% {
-    -moz-transform: rotate(359deg);
-    -o-transform: rotate(359deg);
-    -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
-@-o-keyframes spin {
-  0% {
-    -moz-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
-  100% {
-    -moz-transform: rotate(359deg);
-    -o-transform: rotate(359deg);
-    -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
-@-ms-keyframes spin {
-  0% {
-    -moz-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
-  100% {
-    -moz-transform: rotate(359deg);
-    -o-transform: rotate(359deg);
-    -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
-@keyframes spin {
-  0% {
-    -moz-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
-  100% {
-    -moz-transform: rotate(359deg);
-    -o-transform: rotate(359deg);
-    -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}

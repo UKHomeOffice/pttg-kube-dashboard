@@ -1,0 +1,43 @@
+@import '../../variables';
+
+.editablegroup {
+  padding:5px;
+  border-radius: 5px;
+}
+
+.editablegroup--editing {
+  background-color: #eee;
+}
+
+
+
+.editable {
+  
+  label {
+    display: inline-block;
+    padding: 4px 0 8px 0;
+    font-size: 14px;
+    position: relative;
+  }
+  input {
+    display: inline-block;
+    font-size: 14px;
+    width: 800px;
+    position: absolute;
+    top: 0;
+    left: 100px;
+    font-family: $fontMono;
+    border-color: #fff #fff #ccc #fff;
+    border-width: 1px;
+    border-style: solid;
+    &[disabled] {
+      color: #666;
+    }
+  }
+}
+
+.editable--editing {
+  input {
+    border-color: #ccc;
+  }
+}

@@ -7,6 +7,7 @@ const exec = require('child_process').exec
 const config = require('./config')
 const bodyParser = require('body-parser')
 const helm = require('./helm')
+const moment = require('moment')
 
 app.use(bodyParser.json())
 
@@ -20,18 +21,40 @@ const randPass = () => {
   return Array(pwdLen).fill(pwdChars).map(x => x[Math.floor(Math.random() * x.length)]).join('')
 }
 
+// 2018-05-07T22:17:59.153389335
+
 const logLineParse = (l) => {
   let lineJson = null
-  try {
-    lineJson = JSON.parse(l)
-    return lineJson
-  } catch (e) {
-    lineJson = null
+  let msg = ''
+  let data = {}
+
+  let matches = l.match(/([\d-]{10}T[\d:\.]*Z) (.*)/i)
+
+  if (!matches) {
+    return null
   }
 
-  if (!l.length) return null
+  if (matches[1]) {
+    data.utc = matches[1]
+  }
 
-  return {msg: l}
+  if (matches[2]) {
+    try {
+      lineJson = JSON.parse(matches[2])
+    } catch (e) {
+      // oops
+    }
+  }
+
+  if (lineJson) {
+    data.json = lineJson
+  } else if (matches[2].length === 0) {
+    return null
+  } else {
+    data.msg = matches[2]
+  }
+
+  return data
 }
 
 helm.init()
@@ -69,6 +92,11 @@ const stdCmdAndResponse = (res, cmd, postProcess) => {
       res.send({error: e})
     })
 }
+
+app.post('/api/settings', (req, res) => {
+  // console.log(req.body)
+  res.send(req.body)
+})
 
 app.get('/api/context/:con/helm', (req, res) => {
   let versions = helm.getHelmVersions(req.params.con)
@@ -167,7 +195,7 @@ app.get('/api/context/:con/namespace/:ns/pods', (req, res) => {
   execCmd(ecmd).then((events) => {
     let podEvents = {}
     _.each(events.items, (evt) => {
-      if (evt.involvedObject.kind !== 'Pod') {
+      if (!evt.involvedObject || evt.involvedObject.kind !== 'Pod') {
         // only interested in Pod events
         return
       }
@@ -198,7 +226,21 @@ app.get('/api/context/:con/namespace/:ns/pods/:id/describe', (req, res) => {
 })
 
 app.get('/api/context/:con/namespace/:ns/pods/:id/log/:container', (req, res) => {
-  const cmd = `kubectl --context=${req.params.con} logs ${req.params.id} -n ${req.params.ns} -c ${req.params.container} --limit-bytes=` + 1024 * 2048
+  let cmd = `kubectl --context=${req.params.con} logs ${req.params.id} -n ${req.params.ns} -c ${req.params.container} --timestamps`
+
+  switch (req.query.since) {
+    case '1h':
+    case '2h':
+    case '4h':
+      cmd += ' --since=' + req.query.since
+      break
+    case 'today':
+      cmd += ' --since-time=' + (moment().startOf('day').toISOString())
+      break
+    default:
+      cmd += ' --limit-bytes=' + 1024 * 2048
+  }
+
   stdCmdAndResponse(res, cmd, (result) => {
     var data = []
     var lines = result.raw.split('\n')
@@ -208,20 +250,6 @@ app.get('/api/context/:con/namespace/:ns/pods/:id/log/:container', (req, res) =>
       if (entry) {
         data.push(entry)
       }
-      // try {
-      //   lineJson = JSON.parse(l)
-      //   data.push(lineJson)
-      // } catch (e) {
-      //   if (l.length) {
-      //     data.push(l)
-      //     // let prevMsg = _.last(data)
-      //     // if (prevMsg && prevMsg.msg) {
-      //     //   prevMsg.msg.push(l)
-      //     // } else {
-      //     //   data.push({msg: [l]})
-      //     // }
-      //   }
-      // }
     })
     return {lines: data, __cmd: cmd}
   })

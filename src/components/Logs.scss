@@ -31,6 +31,10 @@
   color: #666;
 }
 
+.logs__line--warn {
+  color: $orange;
+}
+
 .logs__line--error {
   color: #f00;
 }

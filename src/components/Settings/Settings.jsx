@@ -1,52 +1,32 @@
 
 import React from 'react';
-import _ from 'underscore'
-import Project from './Project'
+import AppService from '../AppService'
+import Spec from './Spec'
+import utils from '../UtilsService'
 
+import './Settings.scss'
 
 export default class Settings extends React.Component {
 
   constructor (props) {
     super(props)
-    this.state = { settings: {}}
-  }
-  
-  loadSettings () {
-    fetch('/config')
-      .then(res => res.json())
-      .then(
-        (result) => {
-          if (!result.error) {
-            console.log('Settings', result)
-            this.setState({
-              settings: result
-            })
-          } else {
-            console.log('ERROR: Settings', result)
-          }
-        },
-        (error) => {
-          console.log('ERROR: Settings', error)
-        }
-      )
+    this.conf = utils.clone(AppService.getConfig())
+
+    this.state = { 
+      settings: this.conf
+    }
   }
 
-  componentDidMount () {
-    this.loadSettings()
+  saveSettings () {
+    console.log('SAVE', this.conf)
+    AppService.saveSettings(this.conf)
   }
 
   render() {
-    console.log('Settings', this.state.settings)
-    if (!this.state.settings || !this.state.settings.projects) {
-      return 'No projects'
-    }
-    return (
-      <div className="settings">
-        <h2>Settings</h2>
-        {this.state.settings.projects.map(proj => (
-          <Project proj={proj} />
-        ))}
-      </div>
-    );
+
+    return (<div className="settings">
+      <Spec data={this.conf} label="Conf" />
+      <a className="button" onClick={() => this.saveSettings()}>Save</a>
+    </div>)
   }
 }

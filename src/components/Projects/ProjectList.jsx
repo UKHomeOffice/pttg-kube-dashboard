@@ -11,6 +11,7 @@ import PodsTable from '../PodsTable'
 import EventsTable from '../EventsTable'
 import QuotaTable from '../QuotaTable'
 import JobsTable from '../JobsTable'
+// import ProjectSettings from './ProjectSettings'
 
 import './ProjectList.scss'
 
@@ -89,7 +90,7 @@ class ProjectList extends React.Component {
     }
 
 
-    let selectedLabel = (selectedEnv) ? selectedEnv.name : ''
+    // let selectedLabel = (selectedEnv) ? selectedEnv.name : ''
 
     
     let detail = ''
@@ -134,7 +135,7 @@ class ProjectList extends React.Component {
           <Route path='/project/:project/environment/:environment/pods'>
             <Loader url={urlPods}><PodsTable context={cxt} namespace={ns} /></Loader>
           </Route>
-      </Switch>
+        </Switch>
       )
 
 
@@ -148,9 +149,10 @@ class ProjectList extends React.Component {
         'quota',
         'events'
       ]
+    } else if (selectedProject) {
+      // detail = (<ProjectSettings data={selectedProject} />)
     }
 
-    
 
     return (
       <div>

@@ -1,0 +1,32 @@
+
+
+.settings {
+  padding: 20px;
+}
+
+
+.spec__property--object {
+  width: 160px;
+}
+
+.spec__property--array {
+  width: 30px;
+  position: relative;
+}
+
+.spec__item {
+  padding: 0;
+}
+
+.spec__value {
+  padding: 0;
+  input {
+    width: 100%;
+  }
+}
+
+.spec__remove {
+  position: absolute;
+  top: 3px;
+  right: 0;
+}
