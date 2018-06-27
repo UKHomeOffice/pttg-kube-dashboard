@@ -1,3 +1,4 @@
+@import '../variables';
 
 .pod__summary td{
   border-width: 2px 1px 1px 1px;
@@ -83,4 +84,10 @@
 .container__hash--mismatch, 
 .container__helm--mismatch {
   color: #cc0000;
+}
+
+.button.button--multiselect {
+  display: inline;
+  background-color: #fff;
+  color: $green;
 }

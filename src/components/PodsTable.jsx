@@ -16,6 +16,7 @@ export default class PodsTable extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      multiSelect: false,
       data: this.props.data,
       showDetail: false
     }
@@ -159,6 +160,14 @@ export default class PodsTable extends React.Component {
       ]
     }
 
+    if (this.state.multiSelect) {
+      return (
+        <span key={p.name + c.name} className={c.classes}>
+          <div className="info"><a href="#{c.name}" className="button button--multiselect">{c.name}</a></div>
+        </span>
+      )
+    }
+
     return (
       <span key={p.name + c.name} className={c.classes}>
         <Info title={c.name}>
@@ -174,6 +183,12 @@ export default class PodsTable extends React.Component {
     return (
       <EnvTable data={c} />
     )
+  }
+
+  toggleMultiSelect() {
+    this.setState({
+      multiSelect: !this.state.multiSelect
+    })
   }
 
   render() {
@@ -296,18 +311,22 @@ export default class PodsTable extends React.Component {
     }
 
     return (
-      <table className="podtable">
-        <thead>
-          <tr className="podtable__headings">
-            <th><a className="icon icon-right-open" onClick={() => this.setState({ showDetail: true })}>Pod</a></th>
-            <th></th>
-            <th>Containers</th>
-            <th>Started</th>
-            <th></th>
-          </tr>
-        </thead>
-        {podDetails.map(p => this.getPodHtml(p, detail))}
-      </table>
+      <div>
+        <table className="podtable">
+          <thead>
+            <tr className="podtable__headings">
+              <th><a className="icon icon-right-open" onClick={() => this.setState({ showDetail: true })}>Pod</a></th>
+              <th></th>
+              <th>Containers</th>
+              <th>Started</th>
+              <th></th>
+            </tr>
+          </thead>
+          {podDetails.map(p => this.getPodHtml(p, detail))}
+        </table>
+
+        {/*<a className="button" onClick={() => this.toggleMultiSelect()}>Multi-select</a>*/}
+      </div>
     )
   }  
 }
