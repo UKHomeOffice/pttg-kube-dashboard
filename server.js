@@ -161,6 +161,11 @@ app.post('/api/context/:con/namespace/:ns/deployments/:dep/scale', (req, res) =>
   }
 })
 
+app.delete('/api/context/:con/namespace/:ns/deployments/:dep', (req, res) => {
+  let cmd = `kubectl --context=${req.params.con} -n ${req.params.ns} delete deployment ${req.params.dep}`
+  stdCmdAndResponse(res, cmd, (result) => result)
+})
+
 app.get('/api/context/:con/namespace/:ns/secrets', (req, res) => {
   const cmd = `kubectl --context=${req.params.con} get secrets -o=json --namespace=${req.params.ns}`
   stdCmdAndResponse(res, cmd, (result) => {
@@ -195,16 +200,18 @@ app.get('/api/context/:con/namespace/:ns/pods', (req, res) => {
   execCmd(ecmd).then((events) => {
     let podEvents = {}
     _.each(events.items, (evt) => {
-      if (!evt.involvedObject || evt.involvedObject.kind !== 'Pod') {
+      let regarding = (_.has(evt, 'regarding')) ? evt.regarding : evt.involvedObject
+
+      if (!regarding || regarding.kind !== 'Pod') {
         // only interested in Pod events
         return
       }
 
-      if (!_.has(podEvents, evt.involvedObject.name)) {
+      if (!_.has(podEvents, regarding.name)) {
         // group the events by pod name
-        podEvents[evt.involvedObject.name] = []
+        podEvents[regarding.name] = []
       }
-      podEvents[evt.involvedObject.name].push(evt)
+      podEvents[regarding.name].push(evt)
     })
 
     const cmd = `kubectl --context=${req.params.con} get pods -o=json --namespace=${req.params.ns}`
@@ -226,7 +233,7 @@ app.get('/api/context/:con/namespace/:ns/pods/:id/describe', (req, res) => {
 })
 
 app.get('/api/context/:con/namespace/:ns/pods/:id/log/:container', (req, res) => {
-  let cmd = `kubectl --context=${req.params.con} logs ${req.params.id} -n ${req.params.ns} -c ${req.params.container} --timestamps`
+  let cmd = `kubectl --context=${req.params.con} -n ${req.params.ns} logs ${req.params.id} -c ${req.params.container} --timestamps`
 
   switch (req.query.since) {
     case '1h':
@@ -244,7 +251,6 @@ app.get('/api/context/:con/namespace/:ns/pods/:id/log/:container', (req, res) =>
   stdCmdAndResponse(res, cmd, (result) => {
     var data = []
     var lines = result.raw.split('\n')
-    var lineJson
     _.each(lines, (l) => {
       let entry = logLineParse(l)
       if (entry) {
@@ -253,6 +259,11 @@ app.get('/api/context/:con/namespace/:ns/pods/:id/log/:container', (req, res) =>
     })
     return {lines: data, __cmd: cmd}
   })
+})
+
+app.delete('/api/context/:con/namespace/:ns/pods/:id', (req, res) => {
+  let cmd = `kubectl --context=${req.params.con} -n ${req.params.ns} delete pod ${req.params.id}`
+  stdCmdAndResponse(res, cmd, (result) => result)
 })
 
 app.get('/api/htpasswd', (req, res) => {

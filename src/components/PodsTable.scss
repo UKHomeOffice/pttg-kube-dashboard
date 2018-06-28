@@ -2,7 +2,7 @@
 
 .pod__summary td{
   border-width: 2px 1px 1px 1px;
-
+  position: relative;
 }
 
 .pod__eventslink {
@@ -90,4 +90,10 @@
   display: inline;
   background-color: #fff;
   color: $green;
+}
+
+.pod__delete {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
 }

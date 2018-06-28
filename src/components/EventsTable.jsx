@@ -14,12 +14,10 @@ export default class EventsTable extends React.Component {
           <tbody>
             {data.map(evt => (
               <tr key={evt.metadata.name}>
-                <td>{evt.firstTimestamp}</td>
-                <td>{evt.count}</td>
-                <td>{evt.lastTimestamp}</td>
+                <td>{evt.lastTimestamp || evt.metadata.creationTimestamp}</td>
                 <td>{evt.type}</td>
                 <td>{evt.reason}</td>
-                <td>{evt.message}</td>
+                <td>{evt.note || evt.message}</td>
               </tr>
             ))}
           </tbody>
@@ -35,15 +33,16 @@ export default class EventsTable extends React.Component {
         <tbody>
           {data.items.map(evt => {
             let evtObj = (evt.involvedObject && evt.involvedObject.name) ? evt.involvedObject.name : ''
+            if (!evtObj && evt.regarding && evt.regarding.name) {
+              evtObj = evt.regarding.name
+            }
             
             return (
               <tr key={evt.metadata.name}>
-                <td>{evt.firstTimestamp}</td>
-                <td>{evt.count}</td>
-                <td>{evt.lastTimestamp}</td>
+                <td>{evt.firstTimestamp || evt.metadata.creationTimestamp}</td>
                 <td>{evt.type}</td>
                 <td>{evt.reason}</td>
-                <td>{evt.message}</td>
+                <td>{evt.note || evt.message}</td>
                 <td>{evtObj}</td>
                 <td>
                   <OverlayButton label="JSON" data={evt} />

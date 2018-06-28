@@ -56,6 +56,16 @@ export default class DeploymentsTable extends React.Component {
     )
   }
 
+  deleteDeployment (d) {
+    if (window.confirm (`Delete deployment ${d}?`)) {
+      fetch(`/api/context/${this.props.context}/namespace/${this.props.namespace}/deployments/${d}`, {
+        method: 'DELETE'
+      }).then(result => {
+        console.log(result)
+      })
+    }
+  }
+
   render() {
     let promotions = {}
     let redeployments = {}
@@ -117,6 +127,7 @@ export default class DeploymentsTable extends React.Component {
             <th>Updated</th>
             <th>Scale</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -137,6 +148,9 @@ export default class DeploymentsTable extends React.Component {
                 <OverlayButton label="JSON" data={dep} />
                 {redeployments[dep.metadata.name]}
                 {promotions[dep.metadata.name]}
+              </td>
+              <td>
+                <a className="button button--red deployment__delete" onClick={() => this.deleteDeployment(dep.metadata.name)}>Delete</a>
               </td>
             </tr>
           ))}

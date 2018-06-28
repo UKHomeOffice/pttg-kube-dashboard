@@ -72,9 +72,14 @@ a:hover {
   border-radius: 4px;
   font-size: 12px;
   text-rendering: optimizeLegibility;
+  margin-right: 2px;
   &:hover {
     color: #fff !important;
     background-color: $darkGrey;
+  }
+
+  &.button--red {
+    background-color: $red;
   }
 }
 

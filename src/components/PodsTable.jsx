@@ -73,6 +73,16 @@ export default class PodsTable extends React.Component {
     this.showOverlay(data, true)
   }
 
+  deletePod (p) {
+    if (window.confirm (`Schedule pod ${p.name} for deletion?`)) {
+      fetch(`/api/context/${this.props.context}/namespace/${this.props.namespace}/pods/${p.name}`, {
+        method: 'DELETE'
+      }).then(result => {
+        console.log(result)
+      })
+    }
+  }
+
   getPodHtml (p, detail) {
     let containersWithHtml = p.containers.map(c => {
       c.html = this.getContainerHtml(p, c, detail)
@@ -89,6 +99,7 @@ export default class PodsTable extends React.Component {
             <td rowSpan={p.containers.length}>
               {p.name}
               {viewEventsLink}
+              <div><a className="button button--red pod__delete" onClick={() => this.deletePod(p)}>Delete</a></div>
             </td>
             <td rowSpan={p.containers.length}>{p.readyContainers}/{p.totalContainers}</td>
             {containerWithHTMLfirst.html}
@@ -192,7 +203,7 @@ export default class PodsTable extends React.Component {
   }
 
   render() {
-    console.log(this.props.context)
+    
     let detail = this.state.showDetail
     let data = this.state.data || this.props.data
     if (!data || !_.isArray(data.items)) {
