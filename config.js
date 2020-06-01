@@ -45,7 +45,11 @@ exports = module.exports = {
           name: 'feat3'
         },
         {
+<<<<<<< HEAD
           context: 'ebsa-autosit',
+=======
+          context: 'ebsa-asit',
+>>>>>>> c9299e6 (My version of the project, referencing my kube config.)
           namespace: 'asitcust-i-cust-pt',
           name: 'asit'
         },
@@ -60,9 +64,20 @@ exports = module.exports = {
           name: 'csit'
         },
         {
+<<<<<<< HEAD
           context: 'ebsa-trn1',
           namespace: 'ho-it-trn1-i-cust-ptg',
           name: 'trn1'
+=======
+          context: 'ebsa-prp1',
+          namespace: 'prp1-i-cust-pt',
+          name: 'prp1'
+        },
+        {
+          context: 'ebsa-perf',
+          namespace: 'perf-i-cust-pt',
+          name: 'perf'
+>>>>>>> c9299e6 (My version of the project, referencing my kube config.)
         },
         {
           context: 'ebsa-can',
