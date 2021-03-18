@@ -35,7 +35,7 @@ export default class App extends React.Component {
 
   render () {
     if (!this.state.config) {
-      return '<h1>Loading config</h1>'
+      return <h1>Loading config</h1>
     }
     return <div>{this.props.children}</div>
   }

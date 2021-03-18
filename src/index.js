@@ -2,8 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.scss'
 
-
-import registerServiceWorker from './registerServiceWorker'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Contexts from './components/Contexts'
@@ -34,4 +32,3 @@ ReactDOM.render(
   </App>,
   document.getElementById('root')
 )
-registerServiceWorker()
