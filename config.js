@@ -45,7 +45,7 @@ exports = module.exports = {
           name: 'feat3'
         },
         {
-          context: 'ebsa-asit',
+          context: 'ebsa-autosit',
           namespace: 'asitcust-i-cust-pt',
           name: 'asit'
         },
@@ -60,14 +60,9 @@ exports = module.exports = {
           name: 'csit'
         },
         {
-          context: 'ebsa-prp1',
-          namespace: 'prp1-i-cust-pt',
-          name: 'prp1'
-        },
-        {
-          context: 'ebsa-perf',
-          namespace: 'perf-i-cust-pt',
-          name: 'perf'
+          context: 'ebsa-trn1',
+          namespace: 'ho-it-trn1-i-cust-ptg',
+          name: 'trn1'
         },
         {
           context: 'ebsa-can',
