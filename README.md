@@ -117,7 +117,7 @@ Currently the assumed deployment process is `namespace_dev` to `namespace_test` 
 
 
 ## Helm integration ##
-n
+
 This app will checkout a Helm repo into a cache directory of your choosing and compare versions of pod containers with the values specified by Helm.
 
 ### Step 1: Cache directory ###
