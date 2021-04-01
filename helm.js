@@ -1,5 +1,5 @@
 const fs = require('fs-extra')
-const simpleGit = require('simple-git/promise')
+const simpleGit = require('simple-git')
 const path = require('path')
 const config = require('./config')
 const _ = require('underscore')

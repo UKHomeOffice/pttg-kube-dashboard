@@ -83,14 +83,14 @@ const execCmd = (cmd) => {
 const stdCmdAndResponse = (res, cmd, postProcess) => {
   res.setHeader('Content-Type', 'application/json')
   execCmd(cmd)
-    .then((result) => {
-      result.__cmd = cmd
-      res.send((postProcess) ? postProcess(result) : result)
-    })
-    .catch((e) => {
-      res.statusCode = 500
-      res.send({error: e})
-    })
+  .then((result) => {
+    result.__cmd = cmd
+    res.send((postProcess) ? postProcess(result) : result)
+  })
+  .catch((e) => {
+    res.statusCode = 500
+    res.send({error: e})
+  })
 }
 
 app.post('/api/settings', (req, res) => {
@@ -299,7 +299,7 @@ ${data}
 })
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/index.html'))
+  res.sendFile(path.join(__dirname, 'public/index.html'))
 })
 
 app.listen(process.env.PORT || 9998, () => {
