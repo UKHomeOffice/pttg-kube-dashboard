@@ -62,7 +62,7 @@ helm.init()
 const execCmd = (cmd) => {
   console.log(cmd)
   return new Promise((resolve, reject) => {
-    exec(cmd, {maxBuffer: 1024 * 2048}, (error, stdout, stderr) => {
+    exec(cmd, {maxBuffer: 1024 * 4048}, (error, stdout, stderr) => {
       if (error) {
         console.log('ERROR', error)
         error.stdout = stdout
