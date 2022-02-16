@@ -119,7 +119,8 @@ export default class DeploymentsTable extends React.Component {
         <thead>
           <tr>
             <th>Name</th>
-            <th>Build</th>
+            <th>Helm Version</th>
+            <th>App Version</th>
             <th>Replicas</th>
             <th>Available</th>
             <th>Unavailable</th>
@@ -135,6 +136,7 @@ export default class DeploymentsTable extends React.Component {
             <tr key={dep.metadata.name}>
               <td>{dep.metadata.name}</td>
               <td>{dep.metadata.labels.version}</td>
+              <td>{dep.metadata.labels.appVersion}</td>
               <td>{dep.status.replicas}</td>
               <td>{dep.status.availableReplicas}</td>
               <td>{dep.status.unavailableReplicas}</td>
