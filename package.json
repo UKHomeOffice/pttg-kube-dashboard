@@ -21,7 +21,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "simple-git": "^2.37.0",
+    "simple-git": "^3.3.0",
     "underscore": "^1.12.1",
     "web-vitals": "^1.1.0"
   },
