@@ -25,6 +25,21 @@ exports = module.exports = {
           name: 'dev3'
         },
         {
+          context: 'ebsa-dev4',
+          namespace: 'ho-it-dev4-i-cust-ptg',
+          name: 'dev4'
+        },
+        {
+          context: 'ebsa-dev5',
+          namespace: 'ho-it-dev5-i-cust-ptg',
+          name: 'dev5'
+        },
+        {
+          context: 'ebsa-dev6',
+          namespace: 'ho-it-dev6-i-cust-ptg',
+          name: 'dev6'
+        },
+        {
           context: 'ebsa-feat',
           namespace: 'feat-i-cust-pt',
           name: 'feat'
@@ -43,6 +58,21 @@ exports = module.exports = {
           context: 'ebsa-feat3',
           namespace: 'ho-it-feat3-i-cust-ptg',
           name: 'feat3'
+        },
+        {
+          context: 'ebsa-feat4',
+          namespace: 'ho-it-feat4-i-cust-ptg',
+          name: 'feat4'
+        },
+        {
+          context: 'ebsa-feat5',
+          namespace: 'ho-it-feat5-i-cust-ptg',
+          name: 'feat5'
+        },
+        {
+          context: 'ebsa-feat6',
+          namespace: 'ho-it-feat6-i-cust-ptg',
+          name: 'feat6'
         },
         {
           context: 'ebsa-autosit',
